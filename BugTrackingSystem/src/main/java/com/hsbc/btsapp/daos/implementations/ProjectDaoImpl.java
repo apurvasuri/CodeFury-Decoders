@@ -12,6 +12,7 @@ import com.hsbc.btsapp.beans.Project;
 import com.hsbc.btsapp.beans.enums.Status;
 import com.hsbc.btsapp.daos.interfaces.ProjectDao;
 import com.hsbc.btsapp.exceptions.ProjectAlreadyExistsException;
+import com.hsbc.btsapp.exceptions.ProjectDoesNotExistException;
 import com.hsbc.btsapp.utils.ConnectionUtils;
 
 public class ProjectDaoImpl implements ProjectDao{
@@ -87,7 +88,7 @@ public class ProjectDaoImpl implements ProjectDao{
 	}
 
 	@Override
-	public Project getProjectById(int projectId) {
+	public Project getProjectById(int projectId) throws ProjectDoesNotExistException{
 		Project project = null;
 		try 
 		{
@@ -102,7 +103,7 @@ public class ProjectDaoImpl implements ProjectDao{
 			} 
 			else
 			{
-				System.out.println("User not found");
+				throw new ProjectDoesNotExistException();
 			}
 		} 
 		catch (SQLException e) 
@@ -166,7 +167,7 @@ public class ProjectDaoImpl implements ProjectDao{
 	}
 
 	@Override
-	public void deleteProject(Project project) {
+	public void deleteProject(Project project) throws ProjectDoesNotExistException{
 		String project_count = "select count(project_id) from Project where project_id=" + project.getProjectId();
 		try {
 			Connection conn=ConnectionUtils.getConnection();
@@ -179,7 +180,7 @@ public class ProjectDaoImpl implements ProjectDao{
 			}
 			if (a==0)
 			{
-				System.out.println("Project not found to delete");
+				throw new ProjectDoesNotExistException();
 			}
 			else
 			{
