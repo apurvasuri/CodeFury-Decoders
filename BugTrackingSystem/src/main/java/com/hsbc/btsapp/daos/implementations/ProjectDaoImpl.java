@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.hsbc.btsapp.beans.Project;
 import com.hsbc.btsapp.beans.enums.Status;
+import com.hsbc.btsapp.daos.interfaces.ProjectDao;
 import com.hsbc.btsapp.exceptions.ProjectAlreadyExistsException;
 import com.hsbc.btsapp.utils.ConnectionUtils;
 
