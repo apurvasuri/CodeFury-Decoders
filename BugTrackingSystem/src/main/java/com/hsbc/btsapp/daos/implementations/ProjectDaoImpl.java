@@ -167,7 +167,7 @@ public class ProjectDaoImpl implements ProjectDao{
 
 	@Override
 	public void deleteProject(Project project) {
-		String project_count = "select count(project_id) from User where user_id=" + project.getProjectId();
+		String project_count = "select count(project_id) from Project where project_id=" + project.getProjectId();
 		try {
 			Connection conn=ConnectionUtils.getConnection();
 			PreparedStatement pst = conn.prepareStatement(project_count);
