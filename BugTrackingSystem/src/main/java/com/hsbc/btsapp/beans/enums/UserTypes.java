@@ -15,8 +15,4 @@ public enum UserTypes {
     public String getUserType() {
         return this.userType;
     }
-
-
-	
-	
 }
