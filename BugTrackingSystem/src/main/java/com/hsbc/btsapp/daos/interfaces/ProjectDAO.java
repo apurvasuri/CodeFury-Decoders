@@ -3,8 +3,9 @@ import java.util.List;
 
 import com.hsbc.btsapp.beans.Project;
 import com.hsbc.btsapp.exceptions.ProjectAlreadyExistsException;
+import com.hsbc.btsapp.exceptions.ProjectDoesNotExistException;
 
-public interface ProjectDao {
+public interface ProjectDAO {
 	public void addProject(Project project) throws ProjectAlreadyExistsException;
 	public void updateProject(Project project);
 	public Project getProjectById(int projectId) throws ProjectDoesNotExistException;

@@ -9,7 +9,7 @@ public class Project {
 	private int projectId;
 	private String projectName;
 	private String projectDescription;
-	private Date projStartDate;
+	private Date projectStartDate;
 	private Status projectStatus;
 	private int teamID;
 	
