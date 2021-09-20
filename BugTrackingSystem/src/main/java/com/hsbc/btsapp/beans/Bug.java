@@ -35,6 +35,27 @@ public class Bug {
 		this.severity = severity;
 	}
 
+	
+	
+	public Bug(String bugTitle, String bugDescription, int projectId, String createdBy, Date openDate,
+			String assignedBy, boolean markedForClosing, String closedBy, Date closedDate, String status,
+			String severity) {
+		super();
+		this.bugTitle = bugTitle;
+		this.bugDescription = bugDescription;
+		this.projectId = projectId;
+		this.createdBy = createdBy;
+		this.openDate = openDate;
+		this.assignedBy = assignedBy;
+		this.markedForClosing = markedForClosing;
+		this.closedBy = closedBy;
+		this.closedDate = closedDate;
+		this.status = status;
+		this.severity = severity;
+	}
+
+
+
 	public Bug() {
 		// TODO Auto-generated constructor stub
 	}
