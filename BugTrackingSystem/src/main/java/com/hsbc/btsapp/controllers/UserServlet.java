@@ -39,7 +39,7 @@ public class UserServlet extends HttpServlet {
 		String user_type=request.getParameter("user_type");
 		String user_password=request.getParameter("user_password");
 		try {
-			DAOUserFactory.getBugDAOImpl().addBug(new Bug(bugTitle, bugDescription, projectId, createdBy, openDate, assignedBy, markedForClosing, closedBy, closedDate, status, severity));
+			DAOUserFactory.getUserDAOImpl().addBug(new User(user_id,user_name, user_email,user_password,user_type));
 		} 
 		catch (BugAlreadyExitsException e) {
 			response.setStatus(403);
