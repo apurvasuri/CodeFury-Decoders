@@ -13,7 +13,7 @@ import com.hsbc.btsapp.daos.interfaces.UserDAO;
 import com.hsbc.btsapp.exceptions.UserAlreadyExistsException;
 import com.hsbc.btsapp.utils.ConnectionUtils;
 
-public class UserDaoImpl implements UserDAO {
+public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public void addUser(User user) throws UserAlreadyExistsException {
