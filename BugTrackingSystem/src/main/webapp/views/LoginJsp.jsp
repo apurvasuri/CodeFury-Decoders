@@ -4,9 +4,17 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Login</title>
 </head>
 <body>
+
+<form name="login-form" action="/login" method="POST">
+<label for="useremail">Email:  </label>
+<input type="text" name="useremail"/>
+<label for ="password">Password: </label>
+<input type="text" name="password"/>
+<input type="submit" value="login"/>
+</form>
 
 </body>
 </html>

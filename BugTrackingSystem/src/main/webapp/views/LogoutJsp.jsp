@@ -4,9 +4,12 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Logout</title>
 </head>
 <body>
+
+
+<a href="/Logout.jsp">Logout</a>
 
 </body>
 </html>

@@ -4,12 +4,15 @@ import java.util.List;
 
 import com.hsbc.btsapp.beans.User;
 import com.hsbc.btsapp.exceptions.UserAlreadyExistsException;
+import com.hsbc.btsapp.exceptions.UserNotFoundException;
 
 public interface UserDAO {
-	void addUser(User user) throws UserAlreadyExistsException;
+	boolean addUser(User user) throws UserAlreadyExistsException;
 	void updateUser(User user);
 	User getUserById(int userId);
 	User getUserByName(String userName);
+	String getPasswordByEmail(String emailId) throws UserNotFoundException;
+	User getUserByEmail(String emailId) throws UserNotFoundException;
 	List<User> getAllUsers();
 	void deleteUser(User user);
 }
