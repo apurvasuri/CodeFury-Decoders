@@ -18,7 +18,7 @@ import com.hsbc.btsapp.beans.Project;
 import com.hsbc.btsapp.beans.enums.Status;
 import com.hsbc.btsapp.exceptions.ProjectAlreadyExistsException;
 import com.hsbc.btsapp.exceptions.ProjectDoesNotExistException;
-import com.hsbc.btsapp.factory.DaoFactory;
+import com.hsbc.btsapp.factory.DAOFactory;
 
 
 @WebServlet("/projectController")
