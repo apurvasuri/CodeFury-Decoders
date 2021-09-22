@@ -14,7 +14,7 @@ public class ServiceFactory {
 		return new BugServiceImpl();
 	}
 
-	public static UserService getUserDAOImpl() {
+	public static UserService getUserServiceImpl() {
 		return new UserServiceImpl();
 	}
 
