@@ -75,7 +75,7 @@ public class ProjectControllerServlet extends HttpServlet{
 			e.printStackTrace();
 		}
 		try {
-			DaoFactory.getProjectDaoImpl().addProject(new Project(projectID, projectName,projectDescription, projectStartDate,projectStatus,teamID));
+			DAOFactory.getProjectDAOImpl().addProject(new Project(projectID, projectName,projectDescription, projectStartDate,projectStatus,teamID));
 		} catch(ProjectAlreadyExistsException e) {
 			response.setStatus(403);
 			response.setContentType("text/html");
@@ -102,7 +102,7 @@ public class ProjectControllerServlet extends HttpServlet{
 		project.setProjectDescription(projectDescription);
 		project.setProjStartDate(projectStartDate);
 		project.setProjectStatus(projectStatus);
-		DaoFactory.getProjectDaoImpl().updateProject(project);
+		DAOFactory.getProjectDAOImpl().updateProject(project);
 		
 		
 	}
@@ -125,7 +125,7 @@ public class ProjectControllerServlet extends HttpServlet{
 		project.setProjStartDate(projectStartDate);
 		project.setProjectStatus(projectStatus);
 		try {
-			DaoFactory.getProjectDaoImpl().deleteProject(project);
+			DAOFactory.getProjectDAOImpl().deleteProject(project);
 		} catch (ProjectDoesNotExistException e) {
 			
 			e.printStackTrace();
