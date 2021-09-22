@@ -41,7 +41,7 @@ public class UserDAOImpl implements UserDAO {
 				int count = pst2.executeUpdate();
 				if (count == 1) {
 					System.out.println("User added");
-					status=true;
+					status = true;
 				}
 			}
 		} catch (SQLException e) {
@@ -214,7 +214,7 @@ public class UserDAOImpl implements UserDAO {
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
-		} finally { 
+		} finally {
 			ConnectionUtils.closeConnection();
 		}
 		return user;

@@ -23,6 +23,7 @@ public class LoginServlet extends HttpServlet {
 		super();
 	}
 
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -33,7 +34,7 @@ public class LoginServlet extends HttpServlet {
 		if (validationStatus == false) {
 
 			request.setAttribute("errMessage", "Invalid email or password");
-			request.getRequestDispatcher("Login.jsp").forward(request, response);
+			request.getRequestDispatcher(request.getContextPath()+"/LoginJsp.jsp").forward(request, response);
 
 		} else {
 			HttpSession session = request.getSession();

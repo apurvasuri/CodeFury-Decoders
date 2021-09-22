@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@WebFilter("/*")
+@WebFilter("/views/*")
 public class LoginFilter implements Filter {
 
 	public LoginFilter() {
@@ -30,7 +30,8 @@ public class LoginFilter implements Filter {
 		HttpSession session = req.getSession(false);
 
 		if (session == null || session.getAttribute("User") == null) {
-			res.sendRedirect("/login");
+			System.out.print(req.getContextPath());
+			res.sendRedirect(req.getContextPath()+"/LoginJsp.jsp");
 		} else {
 			chain.doFilter(request, response);
 		}

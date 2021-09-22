@@ -8,11 +8,11 @@
 </head>
 <body>
 
-<form name="login-form" action="/login" method="POST">
+<form name="login-form" action="${pageContext.request.contextPath}/login" method="POST">
 <label for="useremail">Email:  </label>
 <input type="text" name="useremail"/>
 <label for ="password">Password: </label>
-<input type="text" name="password"/>
+<input type="password" name="password"/>
 <input type="submit" value="login"/>
 </form>
 
