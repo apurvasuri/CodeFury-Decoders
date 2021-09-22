@@ -8,6 +8,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.hsbc.btsapp.beans.User;
+import com.hsbc.btsapp.beans.enums.UserTypes;
+import com.hsbc.btsapp.exceptions.UserAlreadyExistsException;
+import com.hsbc.btsapp.factory.DAOFactory;
+
 
 public class UserServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
@@ -48,9 +53,10 @@ public class UserServlet extends HttpServlet {
 		String user_email=request.getParameter("user_email");
 		String user_name=request.getParameter("user_name");
 		String user_type=request.getParameter("user_type");
+		UserTypes us=UserTypes.valueOf(user_type);
 		String user_password=request.getParameter("user_password");
 		try {
-			DAOFactory.getUserDAOImpl().addUser(new User(user_id, user_name, user_email,user_password, user_type));
+			DAOFactory.getUserDAOImpl().addUser(new User(user_id, user_name, user_email,user_password, us));
 		} catch (UserAlreadyExistsException e) {
 			response.setStatus(403);
 			response.setContentType("text/html");
@@ -65,13 +71,15 @@ public class UserServlet extends HttpServlet {
 		String user_email=request.getParameter("user_email");
 		String user_name=request.getParameter("user_name");
 		String user_type=request.getParameter("user_type");
+		
 		String user_password=request.getParameter("user_password");
 		User u=new User();
 		u.setUserId(user_id);
 		u.setUserName(user_name);
-		u.setUserEmail(user_email);
+		u.setEmailId(user_email);
 		u.setPassword(user_password);
-		u.setUserType(user_type);
+		UserTypes ut=UserTypes.valueOf(user_type);
+		u. setUserType(ut);
 		DAOFactory.getUserDAOImpl().updateUser(u);
 	}
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -83,9 +91,10 @@ public class UserServlet extends HttpServlet {
 		User u=new User();
 		u.setUserId(user_id);
 		u.setUserName(user_name);
-		u.setUserEmail(user_email);
+		u.setEmailId(user_email);
 		u.setPassword(user_password);
-		u.setUserType(user_type);
+		UserTypes ut=UserTypes.valueOf(user_type);
+		u. setUserType(ut);
 		DAOFactory.getUserDAOImpl().deleteUser(u);
 	}
 
