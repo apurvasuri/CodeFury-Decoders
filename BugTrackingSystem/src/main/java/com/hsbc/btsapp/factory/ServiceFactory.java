@@ -8,3 +8,22 @@ import com.hsbc.btsapp.services.interfaces.BugService;
 import com.hsbc.btsapp.services.interfaces.ProjectService;
 import com.hsbc.btsapp.services.interfaces.TeamService;
 import com.hsbc.btsapp.services.interfaces.UserService;
+public class ServiceFactory {
+	
+	public static BugService getBugServiceImpl() {
+		return new BugServiceImpl();
+	}
+
+	public static UserService getUserDAOImpl() {
+		return new UserServiceImpl();
+	}
+
+	public static ProjectService getProjectServiceImpl() {
+		return new ProjectServiceImpl();
+	}
+
+	public static TeamService getTeamServiceImpl() {
+		return new TeamServiceImpl();
+	}
+
+}
