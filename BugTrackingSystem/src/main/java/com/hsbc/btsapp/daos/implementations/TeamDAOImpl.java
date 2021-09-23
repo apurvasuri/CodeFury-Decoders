@@ -9,42 +9,82 @@ import java.util.List;
 
 import com.hsbc.btsapp.beans.Team;
 import com.hsbc.btsapp.daos.interfaces.TeamDAO;
+import com.hsbc.btsapp.exceptions.TeamNotFoundException;
+import com.hsbc.btsapp.exceptions.TeamAlreadyExistsException;
+import com.hsbc.btsapp.exceptions.UserAlreadyExistsException;
+import com.hsbc.btsapp.exceptions.UserNotFoundException;
 import com.hsbc.btsapp.utils.ConnectionUtils;
+
+
 
 public class TeamDAOImpl implements TeamDAO {
 
 	private PreparedStatement ps;
 
+	
+	//Adding Team Data in Database
 	@Override
-	public void addTeam(Team team) {
+	public void addTeam(Team team) throws TeamAlreadyExistsException{
 
-		Connection con = ConnectionUtils.getConnection();
-
-		try {
-			ps = con.prepareStatement("insert into team values(?,?)");
-			ps.setInt(1, team.getTeamId());
-			ps.setInt(2, team.getUserId());
-			int count = ps.executeUpdate();
-		} catch (SQLException e) {
+		String team_count = "select count(team_id) from Teams where team_id=" + team.getTeamId();
+		Connection conn=ConnectionUtils.getConnection();
+		try
+		{
+			PreparedStatement pst1 = conn.prepareStatement(team_count);
+			ResultSet rs = pst1.executeQuery();
+			int a = 0;
+			if (rs.next()) 
+			{
+				a = rs.getInt(1);
+			}
+			if (a==1)
+			{
+				throw new TeamAlreadyExistsException("Team Already Exists");
+			} 
+			else 
+			{
+				ps = conn.prepareStatement("insert into Teams values(?,?)");
+				ps.setInt(1, team.getTeamId());
+				ps.setInt(2, team.getUserId());
+				int count = ps.executeUpdate();
+				if (count == 1)
+				{
+					System.out.println("Team added");
+				}
+			}
+		} 
+		catch (SQLException e)
+		{
 			e.printStackTrace();
-		} finally {
+		} 
+		finally
+		{
 			ConnectionUtils.closeConnection();
 		}
 
 	}
 
+	
+	//Get team data from database using TeamId
 	@Override
-	public List<Team> getTeamByUserId(int userId) {
+	public List<Team> getTeamByUserId(int userId) throws TeamNotFoundException
+	{
 		Connection con = ConnectionUtils.getConnection();
 		List<Team> teamList = new ArrayList<>();
 		try {
-			ps = con.prepareStatement("select * from team where user_id=?");
+			ps = con.prepareStatement("select * from Teams where user_id=?");
 			ps.setInt(1,userId);
 			ResultSet rs = ps.executeQuery();
-			while(rs.next()) {
-				Team team = new Team(rs.getInt(1),rs.getInt(2));
-				teamList.add(team);
+			if(!rs.next()) {
+				throw new TeamNotFoundException("Team not Found");
+			
 			}
+			else {
+				while(rs.next()) {
+					Team team = new Team(rs.getInt(1),rs.getInt(2));
+					teamList.add(team);
+				}
+			}	
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
@@ -53,15 +93,74 @@ public class TeamDAOImpl implements TeamDAO {
 		return teamList;
 	}
 
+	
+	//Update team in database by TeamId
 	@Override
-	public void updateTeam(Team team) {
+	public void updateTeam(Team team) throws TeamNotFoundException{
+		String count = "select count(teamId) from Teams where teamId=" + team.getTeamId();
+		try {
+			Connection conn=ConnectionUtils.getConnection();
+			PreparedStatement pst = conn.prepareStatement(count);
+			ResultSet rs = pst.executeQuery();
+			if(!rs.next()) {
+				throw new TeamNotFoundException("Team not Found");
+			}
+			else {
+				PreparedStatement pst_1 = conn.prepareStatement("update Teams set userId=?"
+						+ " where teamId=?");
+				pst_1.setInt(1, team.getUserId());
+				pst_1.setInt(2, team.getTeamId());
+				int cnt = pst_1.executeUpdate();
+				if (cnt == 1)
+				{
+					System.out.println("Team Updated");
+				}
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		finally {
+			ConnectionUtils.closeConnection();
+		}	
+	}
+
+
+	//Delete team from database
+	@Override
+	public void deleteTeam(Team team) throws TeamNotFoundException{
+		String team_count = "select count(team_id) from Teams where team_id=" + team.getTeamId();
+		Connection conn=ConnectionUtils.getConnection();
+		try {
+			PreparedStatement pst1 = conn.prepareStatement(team_count);
+			ResultSet rs = pst1.executeQuery();
+			int a = 0;
+			if (rs.next())
+			{
+				a = rs.getInt(1);
+			}
+			if (a==0)
+			{
+				throw new TeamNotFoundException("Team not Found");
+			}
+			else
+			{
+				PreparedStatement pst2 = conn.prepareStatement("delete from Team where team_id=?");
+				pst2.setInt(1, team.getTeamId());
+				int count = pst2.executeUpdate();
+				if (count == 1)
+				{
+					System.out.println("Team Deleted");
+				}
+			}
+		} 
+		catch (SQLException e) 
+		{
+			e.printStackTrace();
+		}
+		finally {
+			ConnectionUtils.closeConnection();
+        }
+	}
 		
-	}
-
-	@Override
-	public Team getTeamByTeamId(int teamId) {
-
-		return null;
-	}
-
 }
+
