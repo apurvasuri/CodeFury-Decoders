@@ -46,8 +46,8 @@ public class Project {
 	public void setProjectDescription(String projectDescription) {
 		this.projectDescription = projectDescription;
 	}
-	public Date getProjectStartDate() {
-		return projectStartDate;
+	public java.sql.Date getProjectStartDate() {
+		return (java.sql.Date) projectStartDate;
 	}
 	public void setProjStartDate(Date projectStartDate) {
 		this.projectStartDate = projectStartDate;
