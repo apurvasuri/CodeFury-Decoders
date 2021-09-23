@@ -1,8 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
     
+<%@ page import = com.hsbc.beans.User %>
+    
 <%
-	request.getAttribute("User");
+	User u = request.getAttribute("User");
 	String email = request.getParameter("eid");
 	String role = request.getParameter("role");
 	String pass = request.getParameter("pass");

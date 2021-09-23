@@ -1,5 +1,26 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+ 
+<%@ page import = com.hsbc.beans.User %> 
+    
+<%
+	User u =request.getAttribute("User");
+	String email = request.getParameter("eid");
+	String pass = request.getParameter("pass");
+	
+	if(email == u.getemail() && pass == u.getpass()){
+		if(u.getUserType() == "Project Manager"){
+			response.sendRedirect("projectmanager.jsp");
+		}
+		else if(u.getUserType() == "Developer"){
+			response.sendRedirect("developer.jsp");
+		}
+		else if(u.getUserType() == "Tester"){
+			response.sendRedirect("tester.jsp");
+		}
+	}
+%>
+
 <!DOCTYPE html>
 <html>
 <head>
