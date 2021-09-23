@@ -6,6 +6,18 @@
 <meta charset="ISO-8859-1">
 <title>Register</title>
 <link href = "login.css" rel = "stylesheet">
+<style>
+	input{
+		width : 200px;
+		height : 20px;
+	}
+	
+	select{
+		width : 205px;
+		height : 25px;
+	}
+
+</style>
 </head>
 <body>
 	<header>
@@ -23,7 +35,12 @@
 		<input type = "text" id = "eid">
 		<br>
 		<label> Role </label>
-		<input type = "text" id ="role">
+		<select>
+			<option value="select">Select Role</option>
+			<option value="pm">Project Manager</option>
+    		<option value="dev">Developer</option>
+    		<option value="test">Tester</option>
+		</select>
 		<br>
 		<label> Password </label>
 		<input type = "password" id ="pass">
