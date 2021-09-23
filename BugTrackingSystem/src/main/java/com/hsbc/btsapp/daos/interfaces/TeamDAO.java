@@ -5,11 +5,12 @@ import java.util.List;
 import com.hsbc.btsapp.beans.Team;
 
 public interface TeamDAO {
-	
-	public void addTeam(Team team);
-	public List<Team> getTeamByUserId(int userId);
-	public void updateTeam(Team team);
-	public List<String> getTeamByTeamId(int teamId);
-	void deleteTeam(Team team);
-	
+
+	public void addTeam(Team team) throws TeamAlreadyExistsException;
+	public List<Team> getTeamByUserId(int userId) throws TeamNotFoundException;
+	public void updateTeam(Team team) throws TeamNotFoundException;
+	public void deleteTeam(Team team) throws TeamNotFoundException;
+	public List<String> getTeamByTeamId(int teamId) throws TeamNotFoundException;
+
 }
+	
