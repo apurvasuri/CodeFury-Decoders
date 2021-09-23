@@ -65,7 +65,7 @@ public class TeamDAOImpl implements TeamDAO {
 	}
 
 	
-	//Get team data from database using TeamId
+	//Get team data from database using UserId
 	@Override
 	public List<Team> getTeamByUserId(int userId) throws TeamNotFoundException
 	{
@@ -93,6 +93,34 @@ public class TeamDAOImpl implements TeamDAO {
 		return teamList;
 	}
 
+	//get team by team id
+	@Override
+	public List<String> getTeamByTeamId(int teamId) throws TeamNotFoundException {
+		List<String> userList = new ArrayList<>();
+		String query="select userId ,userName from User where userId IN (select userId from User_Team_Mapping where teamId="+teamId;
+		try {
+			Connection conn=ConnectionUtils.getConnection();
+			PreparedStatement pst = conn.prepareStatement(query);
+			ResultSet rs = pst.executeQuery();
+			if(!rs.next()) {
+					throw new TeamNotFoundException("Team not Found");
+			}
+			else {
+				while(rs.next()) {
+				String user=rs.getInt(1)+rs.getString(2);
+				userList.add(user);
+				}
+			}
+	
+		}catch(SQLException e) {
+		e.printStackTrace();
+	}
+	finally {
+		ConnectionUtils.closeConnection();
+	}	
+		return userList;
+
+	}
 	
 	//Update team in database by TeamId
 	@Override
