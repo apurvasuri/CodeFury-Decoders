@@ -3,11 +3,13 @@ package com.hsbc.btsapp.controllers;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -46,7 +48,7 @@ public class ProjectControllerServlet extends HttpServlet{
 		String role = (String) session.getAttribute("type");
 		User user = (User) session.getAttribute("user");
 		try {
-			List<Project> projectList = DaoFactory.getProjectDaoImpl().getProjectById(teamID);
+			List<Project> projectList = DAOFactory.getProjectDAOImpl().getProjectById(teamID);
 			request.setAttribute("projectList", projectList);
 
 		} catch (ProjectDoesNotExistException e) {
@@ -55,9 +57,7 @@ public class ProjectControllerServlet extends HttpServlet{
 			response.getWriter().print(e.toString());
 			e.printStackTrace();
 		}
-		RequestDispatcher rd=request.getRequestDispatcher("DeveloperProjects.jsp");
-		rd.forward(request, response);
-//		request.getRequestDispatcher("/").forward(request, response);
+		request.getRequestDispatcher("DeveloperProjects.jsp").forward(request, response);;
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

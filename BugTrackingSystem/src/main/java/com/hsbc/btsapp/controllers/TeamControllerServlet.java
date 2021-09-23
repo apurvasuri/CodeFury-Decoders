@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.hsbc.btsapp.beans.Team;
+import com.hsbc.btsapp.exceptions.TeamAlreadyExistsException;
+import com.hsbc.btsapp.exceptions.TeamNotFoundException;
 import com.hsbc.btsapp.factory.DAOFactory;
 
 /**
@@ -27,7 +29,12 @@ public class TeamControllerServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		int userId = Integer.parseInt(request.getParameter("userid"));
-		List<Team> teamList=DAOFactory.getTeamDAOImpl().getTeamByUserId(userId);
+		try {
+			List<Team> teamList=DAOFactory.getTeamDAOImpl().getTeamByUserId(userId);
+		} catch (TeamNotFoundException e) {
+			request.setAttribute("errMessage",e.getMessage());
+			request.getRequestDispatcher("/").forward(request, response);
+		}
 		request.getRequestDispatcher("/").forward(request, response);
 	}
 
@@ -35,7 +42,12 @@ public class TeamControllerServlet extends HttpServlet {
 			throws ServletException, IOException {
 		int teamId = Integer.parseInt(request.getParameter("teamid"));
 		int userId = Integer.parseInt(request.getParameter("userid"));
-		DAOFactory.getTeamDAOImpl().addTeam(new Team(teamId, userId));
+		try {
+			DAOFactory.getTeamDAOImpl().addTeam(new Team(teamId, userId));
+		} catch (TeamAlreadyExistsException e) {
+			request.setAttribute("errMessage",e.getMessage());
+			request.getRequestDispatcher("/").forward(request, response);
+		}
 		request.getRequestDispatcher("/").forward(request, response);
 	}
 
@@ -43,7 +55,12 @@ public class TeamControllerServlet extends HttpServlet {
 			throws ServletException, IOException {
 		int teamId = Integer.parseInt(request.getParameter("teamid"));
 		int userId = Integer.parseInt(request.getParameter("userid"));
-		DAOFactory.getTeamDAOImpl().updateTeam(new Team(teamId, userId));
+		try {
+			DAOFactory.getTeamDAOImpl().updateTeam(new Team(teamId, userId));
+		} catch (TeamNotFoundException e) {
+			request.setAttribute("errMessage",e.getMessage());
+			request.getRequestDispatcher("/").forward(request, response);
+		}
 		request.getRequestDispatcher("/").forward(request, response);
 	}
 
@@ -51,7 +68,12 @@ public class TeamControllerServlet extends HttpServlet {
 			throws ServletException, IOException {
 		int teamId = Integer.parseInt(request.getParameter("teamid"));
 		int userId = Integer.parseInt(request.getParameter("userid"));
-		DAOFactory.getTeamDAOImpl().deleteTeam(new Team(teamId, userId));
+		try {
+			DAOFactory.getTeamDAOImpl().deleteTeam(new Team(teamId, userId));
+		} catch (TeamNotFoundException e) {
+			request.setAttribute("errMessage",e.getMessage());
+			request.getRequestDispatcher("/").forward(request, response);
+		}
 		request.getRequestDispatcher("/").forward(request, response);
 	}
 

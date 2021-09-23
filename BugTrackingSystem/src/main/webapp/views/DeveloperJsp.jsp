@@ -58,7 +58,7 @@
 		</tr>
 		<tr>
 			<th>Team Id : </th>
-			<td><%=p.getTeamId()%></td>
+			<td><%=p.getTeamID()%></td>
 		</tr>
 	</table>
 	<br><br>
