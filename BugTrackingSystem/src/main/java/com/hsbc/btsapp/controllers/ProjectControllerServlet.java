@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import com.hsbc.btsapp.beans.User;
 import com.hsbc.btsapp.beans.Project;
 import com.hsbc.btsapp.beans.enums.Status;
 import com.hsbc.btsapp.exceptions.ProjectAlreadyExistsException;
@@ -27,35 +28,36 @@ public class ProjectControllerServlet extends HttpServlet{
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		
-		int projectID = Integer.parseInt(request.getParameter("projectID"));
-		String projectName = request.getParameter("projectName");
-		String projectDescription = request.getParameter("projectDescription");
-		Date projectStartDate = null;
+		//		int projectID = Integer.parseInt(request.getParameter("projectID"));
+//		String projectName = request.getParameter("projectName");
+//		String projectDescription = request.getParameter("projectDescription");
+//		Date projectStartDate = null;
+//		try {
+//			projectStartDate = new SimpleDateFormat("dd/mm/yyyy").parse(request.getParameter("projectStartDate"));
+//		} catch (ParseException e) {
+//			e.printStackTrace();
+//		}
+//		Status projectStatus = Status.valueOf(request.getParameter("projectStatus"));
+		int teamID = Integer.parseInt(request.getParameter("teamID"));
+		PrintWriter out = response.getWriter();
+		response.setContentType("text/html");
+		HttpSession session = request.getSession();
+
+		String role = (String) session.getAttribute("type");
+		User user = (User) session.getAttribute("user");
 		try {
-			projectStartDate = new SimpleDateFormat("dd/mm/yyyy").parse(request.getParameter("projectStartDate"));
-		} catch (ParseException e) {
+			List<Project> projectList = DaoFactory.getProjectDaoImpl().getProjectById(teamID);
+			request.setAttribute("projectList", projectList);
+
+		} catch (ProjectDoesNotExistException e) {
+			response.setStatus(403);
+			response.setContentType("text/html");
+			response.getWriter().print(e.toString());
 			e.printStackTrace();
 		}
-		Status projectStatus = Status.valueOf(request.getParameter("projectStatus"));
-		response.setContentType("text/html");
-		PrintWriter printWriter = response.getWriter();
-		printWriter.print("<html>");
-		printWriter.print("<body>");
-		printWriter.print("<h1>Project Data</h1>");
-		printWriter.print("<p>Project ID: "+projectID+"</p>");
-		printWriter.print("<p>Project Name: "+projectName+"</p>");
-		printWriter.print("<p>Project Description: "+projectDescription+"</p>");
-		printWriter.print("<p>Project Start Date: "+projectStartDate+"</p>");
-		printWriter.print("<p>Project Status: "+projectStatus+"</p>");
-		printWriter.print("</body>");
-		printWriter.print("</html>");
-		printWriter.close();
-		
-		System.out.println("Project ID: "+projectID);
-		System.out.println("Project Name: "+projectName);
-		System.out.println("Project Description: "+projectDescription);
-		System.out.println("Project Start Date: "+projectStartDate);
-		System.out.println("Project Status: "+projectStatus);
+		RequestDispatcher rd=request.getRequestDispatcher("DeveloperProjects.jsp");
+		rd.forward(request, response);
+//		request.getRequestDispatcher("/").forward(request, response);
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
