@@ -11,6 +11,7 @@ import com.hsbc.btsapp.beans.Team;
 import com.hsbc.btsapp.daos.interfaces.TeamDAO;
 import com.hsbc.btsapp.exceptions.TeamNotFoundException;
 import com.hsbc.btsapp.exceptions.TeamAlreadyExistsException;
+//import com.hsbc.btsapp.exceptions.TeamDoesNotExistException;
 import com.hsbc.btsapp.exceptions.UserAlreadyExistsException;
 import com.hsbc.btsapp.exceptions.UserNotFoundException;
 import com.hsbc.btsapp.utils.ConnectionUtils;
@@ -93,34 +94,6 @@ public class TeamDAOImpl implements TeamDAO {
 		return teamList;
 	}
 
-	//get team by team id
-	@Override
-	public List<String> getTeamByTeamId(int teamId) throws TeamNotFoundException {
-		List<String> userList = new ArrayList<>();
-		String query="select userId ,userName from User where userId IN (select userId from User_Team_Mapping where teamId="+teamId;
-		try {
-			Connection conn=ConnectionUtils.getConnection();
-			PreparedStatement pst = conn.prepareStatement(query);
-			ResultSet rs = pst.executeQuery();
-			if(!rs.next()) {
-					throw new TeamNotFoundException("Team not Found");
-			}
-			else {
-				while(rs.next()) {
-				String user=rs.getInt(1)+rs.getString(2);
-				userList.add(user);
-				}
-			}
-	
-		}catch(SQLException e) {
-		e.printStackTrace();
-	}
-	finally {
-		ConnectionUtils.closeConnection();
-	}	
-		return userList;
-
-	}
 	
 	//Update team in database by TeamId
 	@Override
@@ -151,6 +124,35 @@ public class TeamDAOImpl implements TeamDAO {
 			ConnectionUtils.closeConnection();
 		}	
 	}
+
+	//get team by team id
+	@Override
+	public List<String> getTeamByTeamId(int teamId) throws TeamNotFoundException {
+		List<String> userList = new ArrayList<>();
+		String query="select userId ,userName from User where userId IN (select userId from User_Team_Mapping where teamId="+teamId;
+		try {
+			Connection conn=ConnectionUtils.getConnection();
+			PreparedStatement pst = conn.prepareStatement(query);
+			ResultSet rs = pst.executeQuery();
+			if(!rs.next()) {
+					throw new TeamNotFoundException("Team not Found");
+			}
+			else {
+				while(rs.next()) {
+				String user=rs.getInt(1)+rs.getString(2);
+				userList.add(user);
+				}
+			}
+	
+		}catch(SQLException e) {
+		e.printStackTrace();
+	}
+	finally {
+		ConnectionUtils.closeConnection();
+	}	
+		return userList;
+
+}
 
 
 	//Delete team from database
@@ -191,4 +193,5 @@ public class TeamDAOImpl implements TeamDAO {
 	}
 		
 }
+
 

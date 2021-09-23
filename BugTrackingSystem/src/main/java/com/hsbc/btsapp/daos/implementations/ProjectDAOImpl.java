@@ -40,7 +40,7 @@ public class ProjectDAOImpl implements ProjectDAO{
 				pst_1.setInt(1, project.getProjectId());
 				pst_1.setString(2, project.getProjectName());
 				pst_1.setString(3, project.getProjectDescription());
-				pst_1.setString(4, project.getProjectStartDate().toString());
+				pst_1.setDate(4, project.getProjectStartDate());
 				pst_1.setString(5, project.getProjectStatus().toString());
 				int count = pst_1.executeUpdate();
 				if (count == 1)
@@ -71,7 +71,7 @@ public class ProjectDAOImpl implements ProjectDAO{
 						+ " where project_id=?");
 				pst_1.setString(1, project.getProjectName());
 				pst_1.setString(2, project.getProjectDescription());
-				pst_1.setString(3, project.getProjectStartDate().toString());
+				pst_1.setDate(3, project.getProjectStartDate());
 				pst_1.setString(4, project.getProjectStatus().toString());
 				pst_1.setDouble(5, project.getProjectId());
 				int count = pst_1.executeUpdate();
@@ -89,22 +89,24 @@ public class ProjectDAOImpl implements ProjectDAO{
 	}
 
 	@Override
-	public Project getProjectById(int projectId) throws ProjectDoesNotExistException{
+	public List<Project> getProjectById(int teamID) throws ProjectDoesNotExistException{
 		Project project = null;
+		List<Project>listOfProjects=new ArrayList<>();
 		try 
 		{
 			Connection conn=ConnectionUtils.getConnection();
-			PreparedStatement pst = conn.prepareStatement("select * from Project where project_id=?");
-			pst.setInt(1, projectId);
+			PreparedStatement pst = conn.prepareStatement("select * from Project where teamID= ?");
+			pst.setInt(1, teamID);
 			ResultSet rs = pst.executeQuery();
 			if (rs.next()) 
 			{
 				project = new Project(rs.getInt("project_id"), rs.getString("project_name"),rs.getString("project_description"),
 						Date.valueOf(rs.getString("project_start_date")), Status.valueOf(rs.getString("project_status")), rs.getInt("team_id"));
+				listOfProjects.add(project);
 			} 
 			else
 			{
-				throw new ProjectDoesNotExistException();
+				System.out.println("User not found");
 			}
 		} 
 		catch (SQLException e) 
@@ -114,7 +116,7 @@ public class ProjectDAOImpl implements ProjectDAO{
 		finally {
 			ConnectionUtils.closeConnection();
         }
-		return project;
+		return listOfProjects;
 		
 	}
 
