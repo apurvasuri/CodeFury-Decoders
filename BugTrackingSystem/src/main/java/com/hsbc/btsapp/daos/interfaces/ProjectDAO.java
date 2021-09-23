@@ -8,7 +8,7 @@ import com.hsbc.btsapp.exceptions.ProjectDoesNotExistException;
 public interface ProjectDAO {
 	public void addProject(Project project) throws ProjectAlreadyExistsException;
 	public void updateProject(Project project);
-	public Project getProjectById(int projectId) throws ProjectDoesNotExistException;
+	public List<Project> getProjectById(int teamID) throws ProjectDoesNotExistException;
 	public Project getProjectByName(String projectName);
 	public List<Project> getAllProjects();
 	public void deleteProject(Project project) throws ProjectDoesNotExistException;
