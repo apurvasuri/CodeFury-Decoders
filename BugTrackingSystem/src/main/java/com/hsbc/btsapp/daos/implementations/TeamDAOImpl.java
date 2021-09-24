@@ -25,31 +25,33 @@ public class TeamDAOImpl implements TeamDAO {
 	
 	//Adding Team Data in Database
 	@Override
-	public void addTeam(Team team) throws TeamAlreadyExistsException{
-
-		String team_count = "select count(team_id) from Teams where team_id=" + team.getTeamId();
+	public boolean addTeam(int userId) 
+	{
+		boolean status=true;
+		String user_count = "select count(*) AS counter from Teams where user_id=" + userId;
 		Connection conn=ConnectionUtils.getConnection();
 		try
 		{
-			PreparedStatement pst1 = conn.prepareStatement(team_count);
+			PreparedStatement pst1 = conn.prepareStatement(user_count);
 			ResultSet rs = pst1.executeQuery();
 			int a = 0;
 			if (rs.next()) 
 			{
-				a = rs.getInt(1);
+				a = rs.getInt("counter");
 			}
-			if (a==1)
+			if (a>=4)
 			{
-				throw new TeamAlreadyExistsException("Team Already Exists");
+				status=false;
+				System.out.println("Team cannot be added as Project Manager can have at max 4 teams");
 			} 
 			else 
 			{
-				ps = conn.prepareStatement("insert into Teams values(?,?)");
-				ps.setInt(1, team.getTeamId());
-				ps.setInt(2, team.getUserId());
+				ps = conn.prepareStatement("insert into Teams(user_id) values(?)");
+				ps.setInt(1,userId);
 				int count = ps.executeUpdate();
 				if (count == 1)
 				{
+					status=true;
 					System.out.println("Team added");
 				}
 			}
@@ -58,13 +60,8 @@ public class TeamDAOImpl implements TeamDAO {
 		{
 			e.printStackTrace();
 		} 
-		finally
-		{
-			ConnectionUtils.closeConnection();
-		}
-
+		return status;
 	}
-
 	
 	//Get team data from database using UserId
 	@Override
