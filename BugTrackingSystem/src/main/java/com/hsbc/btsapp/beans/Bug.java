@@ -4,10 +4,10 @@ import java.util.Date;
 
 public class Bug {
 
-	private int bugId;
+	private String bugId;
 	private String bugTitle;
 	private String bugDescription;
-	private int projectId;
+	private String projectId;
 	private String createdBy;
 	private Date openDate;
 	private String assignedBy;
@@ -17,7 +17,7 @@ public class Bug {
 	private String status;
 	private String severity;
 
-	public Bug(int bugId, String bugTitle, String bugDescription, int projectId, String createdBy, Date openDate,
+	public Bug(String bugId, String bugTitle, String bugDescription, String projectId, String createdBy, Date openDate,
 			String assignedBy, boolean markedForClosing, String closedBy, Date closedDate, String status,
 			String severity) {
 		super();
@@ -37,7 +37,7 @@ public class Bug {
 
 	
 	
-	public Bug(String bugTitle, String bugDescription, int projectId, String createdBy, Date openDate,
+	public Bug(String bugTitle, String bugDescription, String projectId, String createdBy, Date openDate,
 			String assignedBy, boolean markedForClosing, String closedBy, Date closedDate, String status,
 			String severity) {
 		super();
@@ -60,11 +60,11 @@ public class Bug {
 		// TODO Auto-generated constructor stub
 	}
 
-	public int getBugId() {
+	public String getBugId() {
 		return bugId;
 	}
 
-	public void setBugId(int bugId) {
+	public void setBugId(String bugId) {
 		this.bugId = bugId;
 	}
 
@@ -84,11 +84,11 @@ public class Bug {
 		this.bugDescription = bugDescription;
 	}
 
-	public int getProjectId() {
+	public String getProjectId() {
 		return projectId;
 	}
 
-	public void setProjectId(int projectId) {
+	public void setProjectId(String projectId) {
 		this.projectId = projectId;
 	}
 
