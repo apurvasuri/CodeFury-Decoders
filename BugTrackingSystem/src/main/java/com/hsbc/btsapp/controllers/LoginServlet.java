@@ -34,8 +34,7 @@ public class LoginServlet extends HttpServlet {
 		if (validationStatus == false) {
 
 			request.setAttribute("errMessage", "Invalid email or password");
-			request.getRequestDispatcher(request.getContextPath()+"/LoginJsp.jsp").forward(request, response);
-
+			request.getRequestDispatcher("/Hompage.html").forward(request, response);
 		} else {
 			HttpSession session = request.getSession();
 			User user = null;
@@ -44,7 +43,7 @@ public class LoginServlet extends HttpServlet {
 			} catch (UserNotFoundException e) {
 				System.out.println(e.getMessage());
 				request.setAttribute("errMessage", "Invalid email");
-				request.getRequestDispatcher("Login.jsp").forward(request, response);
+				request.getRequestDispatcher("LoginJsp.jsp").forward(request, response);
 			}
 			session.setAttribute(SESSION_USEROBJ, user);
 		}

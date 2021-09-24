@@ -11,6 +11,7 @@
 <form name="register-form" action="/register" method="POST">
 <label for="username">Username: </lable><input type="text" name="username"/>
 <label for="useremail">Email: </lable><input type="text" name="useremail"/>
+<label for="role">Role: </lable><input type="text" name="role"/>
 <label for="password">Password: </lable><input type="text" name="password"/>
 <label for="confirm_password">Confirm password: </lable><input type="text" name=""confirm_password""/>
 </form>
