@@ -57,7 +57,7 @@ public class ProjectControllerServlet extends HttpServlet{
 			response.getWriter().print(e.toString());
 			e.printStackTrace();
 		}
-		request.getRequestDispatcher("DeveloperProjects.jsp").forward(request, response);;
+		request.getRequestDispatcher("DeveloperJsp.jsp").forward(request, response);;
 	}
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
