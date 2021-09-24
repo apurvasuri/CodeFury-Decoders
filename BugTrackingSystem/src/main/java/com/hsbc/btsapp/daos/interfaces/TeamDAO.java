@@ -8,7 +8,7 @@ import com.hsbc.btsapp.exceptions.TeamNotFoundException;
 
 public interface TeamDAO {
 
-	public void addTeam(Team team) throws TeamAlreadyExistsException;
+	public boolean addTeam(int userId);
 	public List<Team> getTeamByUserId(int userId) throws TeamNotFoundException;
 	public void updateTeam(Team team) throws TeamNotFoundException;
 	public void deleteTeam(Team team) throws TeamNotFoundException;
