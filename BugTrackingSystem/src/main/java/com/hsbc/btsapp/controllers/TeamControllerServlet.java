@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.hsbc.btsapp.beans.Team;
+import com.hsbc.btsapp.beans.User;
 import com.hsbc.btsapp.exceptions.TeamAlreadyExistsException;
 import com.hsbc.btsapp.exceptions.TeamNotFoundException;
 import com.hsbc.btsapp.factory.DAOFactory;
@@ -18,7 +19,7 @@ import com.hsbc.btsapp.factory.DAOFactory;
  * Servlet implementation class TeamContollerServlet
  */
 
-@WebServlet("/teamController")
+@WebServlet("/CreateTeam")
 public class TeamControllerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -39,16 +40,21 @@ public class TeamControllerServlet extends HttpServlet {
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		int teamId = Integer.parseInt(request.getParameter("teamid"));
+			throws ServletException, IOException
+	{
+		
 		int userId = Integer.parseInt(request.getParameter("userid"));
-		try {
-			DAOFactory.getTeamDAOImpl().addTeam(new Team(teamId, userId));
-		} catch (TeamAlreadyExistsException e) {
-			request.setAttribute("errMessage",e.getMessage());
-			request.getRequestDispatcher("/").forward(request, response);
+		boolean status =false;
+		status = DAOFactory.getTeamDAOImpl().addTeam(userId);
+		if(status==false) 
+		{
+			request.setAttribute("errMessage", "Team cannot be added as Project Manager can have at max 4 teams");
 		}
-		request.getRequestDispatcher("/").forward(request, response);
+		else 
+		{
+			request.setAttribute("successMessage","Team added successfully");
+		}
+		request.getRequestDispatcher(request.getContextPath()+"/PMCreateTeam.jsp").forward(request, response);
 	}
 
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
