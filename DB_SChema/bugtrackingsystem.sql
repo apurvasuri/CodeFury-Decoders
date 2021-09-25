@@ -11,4 +11,7 @@ create table Bug ( bug_id varchar(20), bug_title varchar(40) NOT NULL, bug_descr
 
 create table User_Team_Mapping(user_id int NOT NULL, team_id int NOT NULL, user_type varchar(30), FOREIGN KEY (user_id) references User(user_id), FOREIGN KEY (team_id) references Teams(team_id));
 
+create table User_Project_Mapping(user_id int, project_id varchar(40), user_type varchar(20), FOREIGN KEY (user_id) references User(user_id), FOREIGN KEY (project_id) references Project(project_id));
+
+
 

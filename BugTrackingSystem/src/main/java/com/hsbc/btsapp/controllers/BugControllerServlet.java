@@ -41,27 +41,29 @@ public class BugControllerServlet extends HttpServlet {
 		//project name = pname
 		String bugTitle = request.getParameter("bugTitle");
 		String bugDescription = request.getParameter("bugDescription");
-		String projectId = request.getParameter("projectid");
-		String createdBy = request.getParameter("createby");
-		Date openDate = null, closedDate = null;
-		try {
-			openDate = new SimpleDateFormat("dd/mm/yyyy").parse(request.getParameter("opendate"));
-			closedDate = new SimpleDateFormat("dd/mm/yyyy").parse(request.getParameter("closedate"));
-		} catch (ParseException e) {
-
-			response.setStatus(403);
-			response.setContentType("text/html");
-			response.getWriter().print("Date could not be parsed");
-			e.printStackTrace();
-		}
-		String assignedBy = request.getParameter("assignedBy");
-		boolean markedForClosing = Boolean.getBoolean(request.getParameter("markedforclosing"));
-		String closedBy = request.getParameter("closedBy");
-		String status = request.getParameter("status");
+//		String projectId = request.getParameter("projectid");
+//		String createdBy = request.getParameter("createby");
+//		Date openDate = null, closedDate = null;
+//		try {
+//			openDate = new SimpleDateFormat("dd/mm/yyyy").parse(request.getParameter("opendate"));
+//			closedDate = new SimpleDateFormat("dd/mm/yyyy").parse(request.getParameter("closedate"));
+//		} catch (ParseException e) {
+//
+//			response.setStatus(403);
+//			response.setContentType("text/html");
+//			response.getWriter().print("Date could not be parsed");
+//			e.printStackTrace();
+//		}
+//		String assignedBy = request.getParameter("assignedBy");
+//		boolean markedForClosing = Boolean.getBoolean(request.getParameter("markedforclosing"));
+//		String closedBy = request.getParameter("closedBy");
+//		String status = request.getParameter("status");
 		String severity = request.getParameter("levels");
 		try {
-			DAOFactory.getBugDAOImpl().addBug(new Bug(bugTitle, bugDescription, projectId, createdBy, openDate,
-					assignedBy, markedForClosing, closedBy, closedDate, status, severity));
+//			DAOFactory.getBugDAOImpl().addBug(new Bug(bugTitle, bugDescription, projectId, createdBy, openDate,
+//					assignedBy, markedForClosing, closedBy, closedDate, status, severity));
+			DAOFactory.getBugDAOImpl().addBug(new Bug(bugTitle, bugDescription, severity));
+			
 		} catch (BugAlreadyExitsException e) {
 			response.setStatus(403);
 			response.setContentType("text/html");

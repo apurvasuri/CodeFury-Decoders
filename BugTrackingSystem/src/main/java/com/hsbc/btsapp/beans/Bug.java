@@ -34,6 +34,12 @@ public class Bug {
 		this.status = status;
 		this.severity = severity;
 	}
+	
+	public Bug(String bugTitle, String bugDescription, String severity) {
+		this.bugTitle= bugTitle;
+		this.bugDescription = bugDescription;
+		this.severity = severity;
+	}
 
 	
 	
@@ -154,6 +160,10 @@ public class Bug {
 
 	public void setSeverity(String severity) {
 		this.severity = severity;
+	}
+	
+	public void generateBugId() {
+		this.bugId = this.getProjectId() + this.getBugTitle();
 	}
 
 }
