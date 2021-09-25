@@ -6,6 +6,7 @@
 	<meta charset="ISO-8859-1">
 	<title>Decoders</title>
 	<link href = "style.css" rel = "stylesheet">
+	<script src="js/developerJs.js"></script>
 	<style>
 		th{
 			text-align: left;
