@@ -6,8 +6,10 @@ import com.hsbc.btsapp.daos.implementations.BugDAOImpl;
 import com.hsbc.btsapp.daos.implementations.ProjectDAOImpl;
 import com.hsbc.btsapp.daos.implementations.TeamDAOImpl;
 import com.hsbc.btsapp.daos.implementations.UserDAOImpl;
+import com.hsbc.btsapp.daos.implementations.UserProjectMappingImpl;
 import com.hsbc.btsapp.daos.implementations.UserTeamMappingImpl;
 import com.hsbc.btsapp.daos.interfaces.BugDAO;
+import com.hsbc.btsapp.daos.interfaces.IUserProjectMapping;
 import com.hsbc.btsapp.daos.interfaces.IUserTeamMapping;
 import com.hsbc.btsapp.daos.interfaces.ProjectDAO;
 import com.hsbc.btsapp.daos.interfaces.TeamDAO;
@@ -34,6 +36,10 @@ public class DAOFactory {
 	
 	public static IUserTeamMapping getUserTeamMapping() {
 		return new UserTeamMappingImpl();
+	}
+	
+	public static IUserProjectMapping getUserProjectMapping() {
+		return new UserProjectMappingImpl();
 	}
 
 }

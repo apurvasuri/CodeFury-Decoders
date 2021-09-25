@@ -1,4 +1,4 @@
-<%@ page language="java" import="com.hsbc.btsapp.beans.Project, com.hsbc.btsapp.beans.User, com.hsbc.btsapp.beans.Bug, java.util.List" contentType="text/html; charset=ISO-8859-1"
+<%@ page language="java" import="com.hsbc.btsapp.beans.Project, com.hsbc.btsapp.beans.User, com.hsbc.btsapp.beans.Bug,com.hsbc.btsapp.beans.Team, java.util.List" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html>
 <html>
@@ -17,7 +17,9 @@
 	</style>
 </head>
 <body>
-	<% Project p=(Project) request.getAttribute("project"); 
+	<% 
+	Team team = (Team) request.getAttribute("team");
+	Project p=(Project) request.getAttribute("userProject"); 
 	List<Bug> blist=(List<Bug>) request.getAttribute("bug");
 	User u=(User) session.getAttribute("User");
 	%>
@@ -33,7 +35,7 @@
 	</header>
 	<br><br><br><br><br>
 	<%if(p==null){ %>
-		<p>No project assigned!</p>
+		<p>No project assigned! <form action="projectController" method="get"><input type="submit" value="Show All Projects"/></form></p>
 	<%} else {%>
 		<form action="">
 		<table border="1">
@@ -64,7 +66,7 @@
 	</table>
 	<br><br>
 	<% if(blist==null){ %>
-		<p>No bugs found</p>
+		<p>No bugs found <form action="bugController" method="get"><input type="submit" value="Show All Bugs"/></form>
 	<%} else { %>
 		<table border="1">
 		<tr>
