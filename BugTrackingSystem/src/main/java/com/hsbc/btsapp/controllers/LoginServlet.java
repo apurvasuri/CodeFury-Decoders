@@ -13,12 +13,13 @@ import com.hsbc.btsapp.daos.interfaces.UserDAO;
 import com.hsbc.btsapp.exceptions.UserNotFoundException;
 import com.hsbc.btsapp.factory.DAOFactory;
 import com.hsbc.btsapp.services.ValidationServices;
+import com.mysql.cj.Session;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final String SESSION_USEROBJ = "User";
-
+	private String errMessage = "Something went wrong";
 	public LoginServlet() {
 		super();
 	}
@@ -34,7 +35,7 @@ public class LoginServlet extends HttpServlet {
 		if (validationStatus == false) {
 
 			request.setAttribute("errMessage", "Invalid email or password");
-			request.getRequestDispatcher("/Hompage.html").forward(request, response);
+			request.getRequestDispatcher("Homepage.html").forward(request, response);
 		} else {
 			HttpSession session = request.getSession();
 			User user = null;
@@ -46,6 +47,18 @@ public class LoginServlet extends HttpServlet {
 				request.getRequestDispatcher("LoginJsp.jsp").forward(request, response);
 			}
 			session.setAttribute(SESSION_USEROBJ, user);
+			switch (user.getUserType()) {
+			case DEV:
+				request.getRequestDispatcher("/views/DeveloperJsp.jsp").forward(request, response);
+			case PM:
+				request.getRequestDispatcher("/views/ProjectManagerJsp.jsp").forward(request, response);
+			case TESTER:
+				request.getRequestDispatcher("/views/TesterJsp.jsp").forward(request, response);
+			default:
+				session.invalidate();
+				request.setAttribute("errMessage", errMessage);
+				request.getRequestDispatcher("Homepage.html").forward(request, response);
+			}
 		}
 	}
 
