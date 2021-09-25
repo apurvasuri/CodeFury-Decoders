@@ -108,38 +108,71 @@ public class ProjectControllerServlet extends HttpServlet {
 		}
 	}
 
+	protected boolean validateSelectedUsers(String[] userIds) {
+		for (String id : userIds) {
+			int userId = Integer.parseInt(id);
+			int assignedProjectCount = DAOFactory.getUserProjectMapping().getUserProjectCount(userId);
+			User user = DAOFactory.getUserDAOImpl().getUserById(userId);
+			System.out.println(user);
+			System.out.println(assignedProjectCount);
+			switch (user.getUserType()) {
+			case DEV:
+				if (assignedProjectCount > 0)
+					return false;
+				break;
+			case TESTER:
+				if (assignedProjectCount > 1)
+					return false;
+				break;
+			default:
+				return false;
+			}
+		}
+		return true;
+	}
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String projectName = request.getParameter("projectname");
 		String projectDescription = request.getParameter("projectdescription");
-		int projectID = Integer.parseInt(request.getParameter("projectid"));
 		Date projectStartDate = null;
-		Status projectStatus = null;
-		int teamID = Integer.parseInt(request.getParameter("teamid"));
+		Status projectStatus = Status.INPROG;
+		int teamID = Integer.parseInt(request.getParameter("teamID"));
+		String projectID = teamID + "_" + projectName;
+		String[] selectedUsers = request.getParameterValues("userids");
 
-		try {
-			projectStartDate = new SimpleDateFormat("dd/mm/yyyy").parse(request.getParameter("projectstartdate"));
-		} catch (ParseException e) {
-			response.setStatus(403);
-			response.setContentType("text/html");
-			response.getWriter().print("Date could not be parsed");
-			e.printStackTrace();
+		boolean userStatus = validateSelectedUsers(selectedUsers);
+		if (userStatus == false) {
+			request.setAttribute("errMessage", "Developer Max 1 Project And Tester Max Project 2");
+			request.getRequestDispatcher("/views/ProjectManagerJsp.jsp").forward(request, response);
+		} else {
+			try {
+				System.out.println(request.getParameter("projectstartdate"));
+				projectStartDate = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("projectstartdate"));
+				System.out.println(new java.sql.Date(projectStartDate.getTime()));
+				System.out.println(projectStartDate);
+			} catch (ParseException e) {
+				response.setStatus(403);
+				response.setContentType("text/html");
+				response.getWriter().print("Date could not be parsed");
+				e.printStackTrace();
+			}
+			try {
+				DAOFactory.getProjectDAOImpl().addProject(new Project(projectID, projectName, projectDescription,
+						projectStartDate, projectStatus, teamID));
+				request.getRequestDispatcher("/views/ProjectManagerJsp.jsp").forward(request, response);
+			} catch (ProjectAlreadyExistsException e) {
+				response.setStatus(403);
+				response.setContentType("text/html");
+				response.getWriter().print(e.toString());
+				e.printStackTrace();
+			}
 		}
-		try {
-			DAOFactory.getProjectDAOImpl().addProject(
-					new Project(projectID, projectName, projectDescription, projectStartDate, projectStatus, teamID));
-		} catch (ProjectAlreadyExistsException e) {
-			response.setStatus(403);
-			response.setContentType("text/html");
-			response.getWriter().print(e.toString());
-			e.printStackTrace();
-		}
-		request.getRequestDispatcher("/").forward(request, response);
 	}
 
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		int projectID = Integer.parseInt(request.getParameter("projectID"));
+		String projectID = request.getParameter("projectID");
 		String projectName = request.getParameter("projectName");
 		String projectDescription = request.getParameter("projectDescription");
 		Date projectStartDate = null;
@@ -161,7 +194,7 @@ public class ProjectControllerServlet extends HttpServlet {
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		int projectID = Integer.parseInt(request.getParameter("projectID"));
+		String projectID = request.getParameter("projectID");
 		String projectName = request.getParameter("projectName");
 		String projectDescription = request.getParameter("projectDescription");
 		Date projectStartDate = null;

@@ -25,6 +25,7 @@ public class RegisterServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		String userName = request.getParameter("username");
 		String userEmail = request.getParameter("useremail");
 		String userPassword = request.getParameter("password");
 		String userType = request.getParameter("role");
@@ -52,7 +53,7 @@ public class RegisterServlet extends HttpServlet {
 		} else {
 			try {
 				status = DAOFactory.getUserDAOImpl()
-						.addUser(new User(userEmail, encrptedPassword, UserTypes.valueOf(userType)));
+						.addUser(new User(userName,userEmail, encrptedPassword, UserTypes.getUserType(userType)));
 
 			} catch (UserAlreadyExistsException e) {
 				request.setAttribute("errMessage", errMessage);

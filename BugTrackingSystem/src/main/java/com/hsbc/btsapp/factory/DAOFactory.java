@@ -1,5 +1,4 @@
 
-
 package com.hsbc.btsapp.factory;
 
 import com.hsbc.btsapp.daos.implementations.BugDAOImpl;
@@ -16,7 +15,7 @@ import com.hsbc.btsapp.daos.interfaces.TeamDAO;
 import com.hsbc.btsapp.daos.interfaces.UserDAO;
 
 public class DAOFactory {
-	
+
 	public static BugDAO getBugDAOImpl() {
 		return new BugDAOImpl();
 	}
@@ -32,12 +31,11 @@ public class DAOFactory {
 	public static TeamDAO getTeamDAOImpl() {
 		return new TeamDAOImpl();
 	}
-	
-	
+
 	public static IUserTeamMapping getUserTeamMapping() {
 		return new UserTeamMappingImpl();
 	}
-	
+
 	public static IUserProjectMapping getUserProjectMapping() {
 		return new UserProjectMappingImpl();
 	}

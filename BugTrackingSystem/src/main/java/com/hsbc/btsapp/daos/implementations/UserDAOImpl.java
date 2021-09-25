@@ -76,10 +76,10 @@ public class UserDAOImpl implements UserDAO {
 			Connection conn = ConnectionUtils.getConnection();
 			PreparedStatement ps = conn.prepareStatement(
 					"insert into User(user_name, user_email, user_password, user_type) value(?,?,?,?)");
-			ps.setString(2, user.getUserName());
-			ps.setString(3, user.getEmailId());
-			ps.setString(4, user.getPassword());
-			ps.setString(5, user.getUserType().getUserType().toString());
+			ps.setString(1, user.getUserName());
+			ps.setString(2, user.getEmailId());
+			ps.setString(3, user.getPassword());
+			ps.setString(4, user.getUserType().getUserType().toString());
 			int count = ps.executeUpdate();
 			if (count == 1) {
 				System.out.println("User added");
