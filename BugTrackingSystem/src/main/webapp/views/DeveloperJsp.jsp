@@ -34,7 +34,7 @@
 	</header>
 	<br><br><br><br><br>
 	<%if(p==null){ %>
-		<p>No project assigned! <form action="projectController" method="get"><input type="submit" value="Show All Projects"/></form></p>
+		<p>No project assigned! <form action="UserProjectMapping" method="get"><input type="submit" value="Show All Projects"/></form></p>
 	<%} else {%>
 		<form action="">
 		<table border="1">
