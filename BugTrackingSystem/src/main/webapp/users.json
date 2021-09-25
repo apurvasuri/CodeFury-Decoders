@@ -1,0 +1,23 @@
+[
+	{
+		"userName": "abcd",
+		"emailId": "abcd@pqrs.com",
+		"userType": "Developer"
+	},
+	{
+		"userName": "abcd",
+		"emailId": "efgh@pqrs.com",
+		"userType": "Project Manager"
+	},
+	{
+		"userName": "abcd",
+		"emailId": "ijkq@pqrs.com",
+		"userType": "Tester"
+	},
+	{
+		"userName": "abcd",
+		"emailId": "wxyz@pqrs.com",
+		"userType": "Developer"
+	}
+]
+	
