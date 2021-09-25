@@ -50,10 +50,13 @@ public class LoginServlet extends HttpServlet {
 			switch (user.getUserType()) {
 			case DEV:
 				request.getRequestDispatcher("/views/DeveloperJsp.jsp").forward(request, response);
+				break;
 			case PM:
 				request.getRequestDispatcher("/views/ProjectManagerJsp.jsp").forward(request, response);
+				break;
 			case TESTER:
 				request.getRequestDispatcher("/views/TesterJsp.jsp").forward(request, response);
+				break;
 			default:
 				session.invalidate();
 				request.setAttribute("errMessage", errMessage);
