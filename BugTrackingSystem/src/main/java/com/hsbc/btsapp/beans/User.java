@@ -34,6 +34,14 @@ public class User {
 		this.userType = userType;
 	}
 
+	public User(String userName, String userEmail, String encrptedPassword, UserTypes userType) {
+		this.userName = userName;
+		this.emailId = userEmail;
+		this.password = encrptedPassword;
+		this.userType = userType;
+	
+	}
+
 	public int getUserId() {
 		return userId;
 	}

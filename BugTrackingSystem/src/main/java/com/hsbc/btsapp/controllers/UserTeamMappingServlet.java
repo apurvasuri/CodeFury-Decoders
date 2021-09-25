@@ -1,6 +1,9 @@
 package com.hsbc.btsapp.controllers;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,65 +17,81 @@ import com.hsbc.btsapp.exceptions.TeamNotFoundException;
 import com.hsbc.btsapp.factory.DAOFactory;
 import com.google.gson.Gson;
 
-
 @WebServlet("/userTeamMapping")
 public class UserTeamMappingServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-  
-    public UserTeamMappingServlet() {
-        super();
-    }
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	public UserTeamMappingServlet() {
+		super();
+	}
 
-		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
-		int userID = Integer.parseInt(request.getParameter("userId"));
-		UserTypes usertype = UserTypes.getUserType(request.getParameter("userType"));
-		try {
-			Team team = DAOFactory.getUserTeamMapping().getUserTeam(userID);
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		if (request.getParameter("teamID") != null) {
+			if (!request.getParameter("teamID").isEmpty()) {
+				int teamID = Integer.parseInt(request.getParameter("teamID"));
+				List<Integer> memberIds = DAOFactory.getUserTeamMapping().getTeamMemeber(teamID);
+				List<User> members = new ArrayList<User>();
+				memberIds.forEach(mem -> {
+					User user = DAOFactory.getUserDAOImpl().getUserById(mem);
+					members.add(user);
+				});
+				Gson gson = new Gson();
+				String json = gson.toJson(members);
+				response.getWriter().write(json);
+			}
+		} else {
+			response.setContentType("application/json");
+			response.setCharacterEncoding("UTF-8");
+			int userID = Integer.parseInt(request.getParameter("userId"));
+			UserTypes usertype = UserTypes.getUserType(request.getParameter("userType"));
+			try {
+				Team team = DAOFactory.getUserTeamMapping().getUserTeam(userID);
 //			request.setAttribute("team", team);
-			Gson gson  = new Gson();
-			String json  = gson.toJson(team);
-			response.getWriter().write(json);
-		} catch (TeamNotFoundException e) {
-			request.setAttribute("errMessage", e.getMessage());
-			request.getRequestDispatcher("Homepage.html").forward(request, response);
+				Gson gson = new Gson();
+				String json = gson.toJson(team);
+				response.getWriter().write(json);
+			} catch (TeamNotFoundException e) {
+				request.setAttribute("errMessage", e.getMessage());
+				request.getRequestDispatcher("Homepage.html").forward(request, response);
 
-		}
-		switch (usertype) {
-		case DEV:
-			request.getRequestDispatcher("/views/DeveloperJsp.jsp").forward(request, response);
-			break;
-		case PM:
-			request.getRequestDispatcher("/views/ProjectManagerJsp.jsp").forward(request, response);
-			break;
-		case TESTER:
-			request.getRequestDispatcher("/views/TesterJsp.jsp").forward(request, response);
-			break;
-		default:
-			request.setAttribute("errMessage", "Something went wrong");
-			request.getRequestDispatcher("Homepage.html").forward(request, response);
+			}
+			switch (usertype) {
+			case DEV:
+				request.getRequestDispatcher("/views/DeveloperJsp.jsp").forward(request, response);
+				break;
+			case PM:
+				request.getRequestDispatcher("/views/ProjectManagerJsp.jsp").forward(request, response);
+				break;
+			case TESTER:
+				request.getRequestDispatcher("/views/TesterJsp.jsp").forward(request, response);
+				break;
+			default:
+				request.setAttribute("errMessage", "Something went wrong");
+				request.getRequestDispatcher("Homepage.html").forward(request, response);
+			}
 		}
 
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		
-		int userId=  Integer.parseInt(request.getParameter("userid"));
-		int teamId=  Integer.parseInt(request.getParameter("teamId"));
-		boolean status =false;
-		User user = DAOFactory.getUserDAOImpl().getUserById(userId);
-		status = DAOFactory.getUserTeamMapping().addUserToTeam(user, teamId);
-		if(status==false) {
+
+		String[] userIds = request.getParameterValues("userids");
+		int teamId = Integer.parseInt(request.getParameter("teamID"));
+		boolean status = false;
+		for (String uId : userIds) {
+			User user = DAOFactory.getUserDAOImpl().getUserById(Integer.parseInt(uId));
+			status = DAOFactory.getUserTeamMapping().addUserToTeam(user, teamId);
+		}
+		if (status == false) {
 			request.setAttribute("errMessage", "User could not be added to team");
+		} else {
+			request.setAttribute("successMessage", "User added to team successfully");
 		}
-		else {
-			request.setAttribute("successMessage","User added to team successfully");
-		}
-		request.getRequestDispatcher(request.getContextPath()+"/user.jsp").forward(request, response);
+		request.getRequestDispatcher("/views/ProjectManagerJsp.jsp").forward(request, response);
 	}
 
 }

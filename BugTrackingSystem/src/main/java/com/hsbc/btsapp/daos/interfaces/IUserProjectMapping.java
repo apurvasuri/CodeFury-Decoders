@@ -10,4 +10,5 @@ public interface IUserProjectMapping {
 	public boolean addUserToProject(User user, String projectId);
 
 	List<String> getUserProjects(int userId) throws ProjectNotFoundException;
+	public int getUserProjectCount(int userId);
 }

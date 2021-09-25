@@ -17,13 +17,12 @@
 	</style>
 </head>
 <body>
-	<% 
+<% 
 	Team team = (Team) request.getAttribute("team");
 	Project p=(Project) request.getAttribute("userProject"); 
 	List<Bug> blist=(List<Bug>) request.getAttribute("bug");
 	User u=(User) session.getAttribute("User");
-	%>
-	<header>
+%>	<header>
         <img src = "logo.jpg" alt = "logo"> 
     	<div class = "nav">
         	<a href ="#">About</a>

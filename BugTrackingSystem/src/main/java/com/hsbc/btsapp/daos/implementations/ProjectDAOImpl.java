@@ -21,10 +21,11 @@ public class ProjectDAOImpl implements ProjectDAO {
 
 	@Override
 	public void addProject(Project project) throws ProjectAlreadyExistsException {
-		String project_count = "select count(project_id) from Project where project_id=" + project.getProjectId();
+		String project_count = "select count(project_id) from Project where project_id=?" ;
 		try {
 			Connection conn = ConnectionUtils.getConnection();
 			PreparedStatement pst = conn.prepareStatement(project_count);
+			pst.setString(1, project.getProjectId());
 			ResultSet rs = pst.executeQuery();
 			int a = 0;
 			if (rs.next()) {
@@ -36,13 +37,13 @@ public class ProjectDAOImpl implements ProjectDAO {
 				throw new ProjectAlreadyExistsException();
 			} else {
 				PreparedStatement pst_1 = conn.prepareStatement(
-						"insert into Project(project_id, project_name, project_description, project_start_date, "
-								+ "project_status value(?,?,?,?,?");
-				pst_1.setInt(1, project.getProjectId());
-				pst_1.setString(2, project.getProjectName());
-				pst_1.setString(3, project.getProjectDescription());
-				pst_1.setDate(4, project.getProjectStartDate());
-				pst_1.setString(5, project.getProjectStatus().toString());
+						"insert into Project(project_id,team_id, project_name, project_description, project_start_date,project_status) values(?,?,?,?,?,?)");
+				pst_1.setString(1, project.getProjectId());
+				pst_1.setInt(2,project.getTeamID());
+				pst_1.setString(3, project.getProjectName());
+				pst_1.setString(4, project.getProjectDescription());
+				pst_1.setDate(5, new java.sql.Date(project.getProjectStartDate().getTime()));
+				pst_1.setString(6, project.getProjectStatus().getStatus());
 				int count = pst_1.executeUpdate();
 				if (count == 1) {
 					System.out.println("Project added");
@@ -70,9 +71,9 @@ public class ProjectDAOImpl implements ProjectDAO {
 								+ " where project_id=?");
 				pst_1.setString(1, project.getProjectName());
 				pst_1.setString(2, project.getProjectDescription());
-				pst_1.setDate(3, project.getProjectStartDate());
+				pst_1.setDate(3, new java.sql.Date(project.getProjectStartDate().getTime()));
 				pst_1.setString(4, project.getProjectStatus().toString());
-				pst_1.setDouble(5, project.getProjectId());
+				pst_1.setString(5, project.getProjectId());
 				int count = pst_1.executeUpdate();
 				if (count == 1) {
 					System.out.println("Project Updated");
@@ -94,7 +95,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 			pst.setString(1, projectID);
 			ResultSet rs = pst.executeQuery();
 			if (rs.next()) {
-				project = new Project(rs.getInt("project_id"), rs.getString("project_name"),
+				project = new Project(rs.getString("project_id"), rs.getString("project_name"),
 						rs.getString("project_description"), Date.valueOf(rs.getString("project_start_date")),
 						Status.valueOf(rs.getString("project_status")), rs.getInt("team_id"));
 			}
@@ -119,7 +120,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 			pst.setInt(1, teamID);
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
-				project = new Project(rs.getInt("project_id"), rs.getString("project_name"),
+				project = new Project(rs.getString("project_id"), rs.getString("project_name"),
 						rs.getString("project_description"), Date.valueOf(rs.getString("project_start_date")),
 						Status.valueOf(rs.getString("project_status")), rs.getInt("team_id"));
 				listOfProjects.add(project);
@@ -143,7 +144,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 			pst.setString(1, projectName);
 			ResultSet rs = pst.executeQuery();
 			if (rs.next()) {
-				project = new Project(rs.getInt("project_id"), rs.getString("project_name"),
+				project = new Project(rs.getString("project_id"), rs.getString("project_name"),
 						rs.getString("project_description"), Date.valueOf(rs.getString("project_start_date")),
 						Status.valueOf(rs.getString("project_status")), rs.getInt("team_id"));
 			} else {
@@ -166,7 +167,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 			PreparedStatement pst = conn.prepareStatement("select * from Project");
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
-				projectList.add(new Project(rs.getInt("project_id"), rs.getString("project_name"),
+				projectList.add(new Project(rs.getString("project_id"), rs.getString("project_name"),
 						rs.getString("project_description"), Date.valueOf(rs.getString("project_start_date")),
 						Status.valueOf(rs.getString("project_status")), rs.getInt("team_id")));
 			}
@@ -193,7 +194,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 				throw new ProjectDoesNotExistException("Project not found");
 			} else {
 				PreparedStatement pst_1 = conn.prepareStatement("delete from Project where project_id=?");
-				pst_1.setInt(1, project.getProjectId());
+				pst_1.setString(1, project.getProjectId());
 				int count = pst_1.executeUpdate();
 				if (count == 1) {
 					System.out.println("Project Deleted");

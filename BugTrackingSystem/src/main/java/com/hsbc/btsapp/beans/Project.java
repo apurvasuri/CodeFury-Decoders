@@ -6,7 +6,7 @@ import com.hsbc.btsapp.beans.enums.Status;
 
 public class Project {
 	
-	private int projectId;
+	private String projectId;
 	private String projectName;
 	private String projectDescription;
 	private Date projectStartDate;
@@ -17,7 +17,7 @@ public class Project {
 		
 	}
 	
-	public Project(int projectId, String projectName, String projectDescription, Date projectStartDate,
+	public Project(String projectId, String projectName, String projectDescription, Date projectStartDate,
 			Status projectStatus, int teamID) {
 		super();
 		this.projectId = projectId;
@@ -27,11 +27,12 @@ public class Project {
 		this.projectStatus = projectStatus;
 		this.teamID = teamID;
 	}
-	
-	public int getProjectId() {
+
+
+	public String getProjectId() {
 		return projectId;
 	}
-	public void setProjectId(int projectId) {
+	public void setProjectId(String projectId) {
 		this.projectId = projectId;
 	}
 	public String getProjectName() {
@@ -46,8 +47,8 @@ public class Project {
 	public void setProjectDescription(String projectDescription) {
 		this.projectDescription = projectDescription;
 	}
-	public java.sql.Date getProjectStartDate() {
-		return (java.sql.Date) projectStartDate;
+	public Date getProjectStartDate() {
+		return  projectStartDate;
 	}
 	public void setProjStartDate(Date projectStartDate) {
 		this.projectStartDate = projectStartDate;

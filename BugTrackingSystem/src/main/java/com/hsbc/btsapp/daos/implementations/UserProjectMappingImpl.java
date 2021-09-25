@@ -38,6 +38,8 @@ public class UserProjectMappingImpl implements IUserProjectMapping {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			ConnectionUtils.closeConnection();
 		}
 		return status;
 	}
@@ -58,8 +60,31 @@ public class UserProjectMappingImpl implements IUserProjectMapping {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} finally {
+			ConnectionUtils.closeConnection();
 		}
 		return projectIdList;
+	}
+
+	@Override
+	public int getUserProjectCount(int userId) {
+		String sql = "select count(*) from user_project_mapping where user_id=?";
+		Connection con = ConnectionUtils.getConnection();
+		int count = 0;
+		try {
+			ps = con.prepareStatement(sql);
+			ps.setInt(1, userId);
+			rs = ps.executeQuery();
+			if (rs.next()) {
+				count = rs.getInt(1);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			ConnectionUtils.closeConnection();
+		}
+		return count;
 	}
 
 }
