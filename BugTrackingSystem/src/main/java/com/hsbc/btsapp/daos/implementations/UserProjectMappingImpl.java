@@ -24,7 +24,7 @@ public class UserProjectMappingImpl implements IUserProjectMapping {
 	@Override
 	public boolean addUserToProject(User user, String projectId) throws UserCouldNotBeAdded {
 		boolean status = false;
-		String sql = "insert into user_project_mapping(user_id,user_type,project_id) values(?,?,?)";
+		String sql = "insert into User_Project_Mapping(user_id,user_type,project_id) values(?,?,?)";
 		Connection con = ConnectionUtils.getConnection();
 
 		try {
@@ -35,8 +35,7 @@ public class UserProjectMappingImpl implements IUserProjectMapping {
 			int count = ps.executeUpdate();
 			if (count == 1) {
 				status = true;
-			}
-			else {
+			} else {
 				throw new UserCouldNotBeAdded("User could not be assigned to porject. Please check again");
 			}
 
@@ -52,7 +51,7 @@ public class UserProjectMappingImpl implements IUserProjectMapping {
 
 	@Override
 	public List<String> getUserProjects(int userId) throws ProjectNotFoundException {
-		String sql = "select project_id from user_project_mapping where user_id=?";
+		String sql = "select project_id from User_Project_Mapping where user_id=?";
 		Connection con = ConnectionUtils.getConnection();
 		List<String> projectIdList = new ArrayList<>();
 		try {
@@ -74,7 +73,7 @@ public class UserProjectMappingImpl implements IUserProjectMapping {
 
 	@Override
 	public int getUserProjectCount(int userId) {
-		String sql = "select count(*) from user_project_mapping where user_id=?";
+		String sql = "select count(*) from User_Project_Mapping where user_id=?";
 		Connection con = ConnectionUtils.getConnection();
 		int count = 0;
 		try {
@@ -91,6 +90,28 @@ public class UserProjectMappingImpl implements IUserProjectMapping {
 			ConnectionUtils.closeConnection();
 		}
 		return count;
+	}
+
+	@Override
+	public List<Integer> getUserOfProject(String projectID) {
+		String sql = "select user_id from User_Project_Mapping where project_id=?";
+		Connection con = ConnectionUtils.getConnection();
+		List<Integer> userIds = new ArrayList<>();
+		int count = 0;
+		try {
+			ps = con.prepareStatement(sql);
+			ps.setString(1, projectID);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				userIds.add(rs.getInt(1));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			ConnectionUtils.closeConnection();
+		}
+		return userIds;
 	}
 
 }

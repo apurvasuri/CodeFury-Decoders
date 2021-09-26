@@ -29,7 +29,7 @@ public class UserDAOImpl implements UserDAO {
 					throw new UserAlreadyExistsException("User email already exists in database");
 				}
 				ps = ConnectionUtils.getConnection()
-						.prepareStatement("INSERT INTO user(user_name, user_email, user_type) VALUES(?,?,?)");
+						.prepareStatement("INSERT INTO User(user_name, user_email, user_type) VALUES(?,?,?)");
 				ps.setString(1, user.getUserName());
 				ps.setString(2, user.getEmailId());
 				ps.setString(3, user.getUserType().getUserType().toString());
@@ -100,7 +100,7 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public void updateUser(User user) {
-		String user_count = "select count(user_id) from user where user_id=" + user.getUserId();
+		String user_count = "select count(user_id) from User where user_id=" + user.getUserId();
 		try {
 			Connection conn = ConnectionUtils.getConnection();
 			PreparedStatement pst1 = conn.prepareStatement(user_count);
@@ -109,7 +109,7 @@ public class UserDAOImpl implements UserDAO {
 				System.out.println("User Not Present to update");
 			} else {
 				PreparedStatement pst2 = conn.prepareStatement(
-						"update user set user_name=?,user_email=?,user_password=?,user_type=? where user_id=?");
+						"update User set user_name=?,user_email=?,user_password=?,user_type=? where user_id=?");
 				pst2.setString(1, user.getUserName());
 				pst2.setString(2, user.getEmailId());
 				pst2.setString(3, user.getPassword());
@@ -132,7 +132,7 @@ public class UserDAOImpl implements UserDAO {
 		User user = null;
 		try {
 			Connection conn = ConnectionUtils.getConnection();
-			PreparedStatement pst = conn.prepareStatement("select * from user where user_id=?");
+			PreparedStatement pst = conn.prepareStatement("select * from User where user_id=?");
 			pst.setInt(1, userId);
 			ResultSet rs = pst.executeQuery();
 			if (rs.next()) {
@@ -154,7 +154,7 @@ public class UserDAOImpl implements UserDAO {
 		User user = null;
 		try {
 			Connection conn = ConnectionUtils.getConnection();
-			PreparedStatement pst = conn.prepareStatement("select * from user where user_name=?");
+			PreparedStatement pst = conn.prepareStatement("select * from User where user_name=?");
 			pst.setString(1, userName);
 			ResultSet rs = pst.executeQuery();
 			if (rs.next()) {
@@ -176,7 +176,7 @@ public class UserDAOImpl implements UserDAO {
 		List<User> userList = new ArrayList<User>();
 		try {
 			Connection conn = ConnectionUtils.getConnection();
-			PreparedStatement pst = conn.prepareStatement("select * from user");
+			PreparedStatement pst = conn.prepareStatement("select * from User");
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
 				userList.add(new User(rs.getInt("user_id"), rs.getString("user_name"), rs.getString("user_email"),
@@ -192,7 +192,7 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public void deleteUser(User user) {
-		String user_count = "select count(user_id) from user where user_id=" + user.getUserId();
+		String user_count = "select count(user_id) from User where user_id=" + user.getUserId();
 		try {
 			Connection conn = ConnectionUtils.getConnection();
 			PreparedStatement pst1 = conn.prepareStatement(user_count);
@@ -204,7 +204,7 @@ public class UserDAOImpl implements UserDAO {
 			if (a == 0) {
 				System.out.println("User not found to delete");
 			} else {
-				PreparedStatement pst2 = conn.prepareStatement("delete from user where user_id=?");
+				PreparedStatement pst2 = conn.prepareStatement("delete from User where user_id=?");
 				pst2.setInt(1, user.getUserId());
 				int count = pst2.executeUpdate();
 				if (count == 1) {
@@ -223,7 +223,7 @@ public class UserDAOImpl implements UserDAO {
 		String userPass = "";
 		try {
 			Connection conn = ConnectionUtils.getConnection();
-			PreparedStatement pst = conn.prepareStatement("select * from user where user_email=?");
+			PreparedStatement pst = conn.prepareStatement("select * from User where user_email=?");
 			pst.setString(1, emailId);
 			ResultSet rs = pst.executeQuery();
 			if (rs.next()) {
@@ -247,7 +247,7 @@ public class UserDAOImpl implements UserDAO {
 		User user = null;
 		try {
 			Connection conn = ConnectionUtils.getConnection();
-			PreparedStatement pst = conn.prepareStatement("select * from user where user_email=?");
+			PreparedStatement pst = conn.prepareStatement("select * from User where user_email=?");
 			pst.setString(1, emailId);
 			ResultSet rs = pst.executeQuery();
 			if (rs.next()) {
@@ -270,7 +270,7 @@ public class UserDAOImpl implements UserDAO {
 		Connection conn = ConnectionUtils.getConnection();
 		int count = 0;
 		try {
-			PreparedStatement ps = conn.prepareStatement("select count(*) from user");
+			PreparedStatement ps = conn.prepareStatement("select count(*) from User");
 			ResultSet rs = ps.executeQuery();
 			if (rs.next()) {
 				count = rs.getInt(1);
@@ -289,7 +289,7 @@ public class UserDAOImpl implements UserDAO {
 		boolean exists = false;
 		try {
 			PreparedStatement ps = ConnectionUtils.getConnection()
-					.prepareStatement("SELECT count(*) FROM user where user_email=?");
+					.prepareStatement("SELECT count(*) FROM User where user_email=?");
 			ps.setString(1, email);
 			ResultSet rs = ps.executeQuery();
 			int a = 0;
@@ -315,7 +315,7 @@ public class UserDAOImpl implements UserDAO {
 		boolean exists = false;
 		try {
 			PreparedStatement ps1 = ConnectionUtils.getConnection()
-					.prepareStatement("select count(*) from user where user_id=" + id);
+					.prepareStatement("select count(*) from User where user_id=" + id);
 			ResultSet rs1 = ps1.executeQuery();
 			int a = 0;
 			if (rs1.next()) {

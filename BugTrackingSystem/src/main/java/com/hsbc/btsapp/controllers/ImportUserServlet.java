@@ -64,7 +64,7 @@ public class ImportUserServlet extends HttpServlet {
 			String ext = fileName.substring(fileName.lastIndexOf(".") + 1);
 			System.out.println(ext);
 			String tmpFileName = null;
-			File uploads = new File("C:\\Users\\mkaka\\Desktop\\demo");
+//			File uploads = new File("");
 			System.out.println(fileName);
 			switch (ext) {
 			case "json":
@@ -77,7 +77,7 @@ public class ImportUserServlet extends HttpServlet {
 				throw new IllegalArgumentException("Invalid file format");
 
 			}
-			File file = new File(uploads, tmpFileName);
+			File file = new File(tmpFileName);
 
 			try {
 				InputStream input = part.getInputStream();

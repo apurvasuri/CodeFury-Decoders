@@ -27,6 +27,7 @@ public class UserTeamMappingImpl implements IUserTeamMapping {
 
 		try {
 			ps = con.prepareStatement(sql);
+			System.out.println(user);
 			ps.setInt(1, user.getUserId());
 			ps.setInt(2, teamId);
 			ps.setString(3, user.getUserType().getUserType());

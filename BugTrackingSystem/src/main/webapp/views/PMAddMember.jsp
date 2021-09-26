@@ -10,7 +10,8 @@
 <body>
 	<% out.println(request.getParameter("teamID")); %>
 
-    	<button class="button" onclick="getDeveloper()">Get Developers</button>
+    	<button class="button" onclick="getDeveloper()">Get Developers and testers</button>
+    	
 		<div id="dtable">
 			
 		</div>

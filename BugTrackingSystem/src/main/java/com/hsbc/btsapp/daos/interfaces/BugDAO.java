@@ -18,4 +18,6 @@ public interface BugDAO {
 	public int deleteBugByBugId(String bugId);
 
 	public int deleteBugByProjectId(String projectId);
+
+	List<Bug> getAllBugsWithUserId(int assignedTo) throws ParseException;
 }

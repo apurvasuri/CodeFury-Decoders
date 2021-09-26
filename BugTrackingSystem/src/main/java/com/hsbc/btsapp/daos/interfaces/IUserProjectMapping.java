@@ -9,7 +9,7 @@ import com.hsbc.btsapp.exceptions.UserCouldNotBeAdded;
 
 public interface IUserProjectMapping {
 	public boolean addUserToProject(User user, String projectId) throws UserCouldNotBeAdded;
-
 	List<String> getUserProjects(int userId) throws ProjectNotFoundException;
+	List<Integer> getUserOfProject(String projectID);
 	public int getUserProjectCount(int userId);
 }

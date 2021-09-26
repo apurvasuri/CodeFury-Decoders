@@ -83,7 +83,9 @@ public class UserTeamMappingServlet extends HttpServlet {
 		int teamId = Integer.parseInt(request.getParameter("teamID"));
 		boolean status = false;
 		for (String uId : userIds) {
+			System.out.println(uId);
 			User user = DAOFactory.getUserDAOImpl().getUserById(Integer.parseInt(uId));
+			System.out.println(user);
 			status = DAOFactory.getUserTeamMapping().addUserToTeam(user, teamId);
 		}
 		if (status == false) {
