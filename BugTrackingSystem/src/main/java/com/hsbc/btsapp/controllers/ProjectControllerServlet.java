@@ -60,9 +60,9 @@ public class ProjectControllerServlet extends HttpServlet {
 							for (Project project : managerProjects) {
 								projectBugs.addAll(
 										DAOFactory.getBugDAOImpl().getAllBugsWithProjectId(project.getProjectId()));
-	
+
 							}
-							
+
 							String bugJson = new Gson().toJson(projectBugs);
 							response.getWriter().write(bugJson);
 

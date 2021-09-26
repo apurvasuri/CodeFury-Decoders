@@ -212,10 +212,8 @@ function getAllTeamMembers() {
 }
 
 
-function getAllBugs(){
-	
-	getAllUser()
-	
+function getAllBugs() {
+
 	console.log("inside function");
 	const http = new XMLHttpRequest();
 	if (!http) {
@@ -230,9 +228,9 @@ function getAllBugs(){
 	http.onreadystatechange = function() {
 		if (this.readyState == 4 && this.status == 200) {
 			console.log(http.response);
-			
+
 			var bugs = http.response;
-			
+
 			var table = document.createElement("table")
 			var tr1 = document.createElement("tr")
 			tr1.appendChild(document.createElement("th").appendChild(document.createTextNode("Bug_Id")))
@@ -241,7 +239,7 @@ function getAllBugs(){
 			tr1.appendChild(document.createElement("th").appendChild(document.createTextNode("Status")))
 			tr1.appendChild(document.createElement("th").appendChild(document.createTextNode("Severity")))
 			table.appendChild(tr1)
-			for(var i=0;i<bugs.length;i++){
+			for (var i = 0; i < bugs.length; i++) {
 				var tr = document.createElement("tr");
 				tr.appendChild(document.createElement("td").appendChild(document.createTextNode(bugs[i].bugId)))
 				tr.appendChild(document.createElement("td").appendChild(document.createTextNode(bugs[i].bugTitle)))
@@ -255,7 +253,7 @@ function getAllBugs(){
 	}
 }
 
-function getProjectDetails(){
+function getProjectDetails() {
 	console.log("inside function");
 	const http = new XMLHttpRequest();
 	if (!http) {
@@ -348,7 +346,7 @@ function getProjectDetails(){
 			document.getElementById("dtable").appendChild(form);
 		}
 	}
-	
-	
-	
+
+
+
 }
