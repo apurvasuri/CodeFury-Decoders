@@ -13,6 +13,7 @@ public class Bug {
 	private int assignedBy;
 	private boolean markedForClosing;
 	private int closedBy;
+	private int assignedTo;
 	private Date closedDate;
 	private String status;
 	private String severity;
@@ -61,6 +62,13 @@ public class Bug {
 
 	public Bug() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public Bug(String bugId2, int assignedTo, int userId, String projectID2) {
+		this.bugId = bugId2;
+		this.projectId = projectID2;
+		this.assignedTo = assignedTo;
+		this.assignedBy = userId;
 	}
 
 	public String getBugId() {
@@ -159,6 +167,14 @@ public class Bug {
 		this.severity = severity;
 	}
 
+	public int getAssignedTo() {
+		return assignedTo;
+	}
+
+	public void setAssignedTo(int assignedTo) {
+		this.assignedTo = assignedTo;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -166,8 +182,8 @@ public class Bug {
 				.append(bugDescription).append(", projectId=").append(projectId).append(", createdBy=")
 				.append(createdBy).append(", openDate=").append(openDate).append(", assignedBy=").append(assignedBy)
 				.append(", markedForClosing=").append(markedForClosing).append(", closedBy=").append(closedBy)
-				.append(", closedDate=").append(closedDate).append(", status=").append(status).append(", severity=")
-				.append(severity).append("]");
+				.append(", assignedTo=").append(assignedTo).append(", closedDate=").append(closedDate)
+				.append(", status=").append(status).append(", severity=").append(severity).append("]");
 		return builder.toString();
 	}
 

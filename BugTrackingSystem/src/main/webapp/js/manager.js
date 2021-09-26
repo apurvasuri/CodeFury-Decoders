@@ -174,9 +174,21 @@ function getAllBugs(){
 			
 			var table = document.createElement("table")
 			var tr1 = document.createElement("tr")
-			
-			console.log(bugs.keys())
+			tr1.appendChild(document.createElement("th").appendChild(document.createTextNode("Bug_Id")))
+			tr1.appendChild(document.createElement("th").appendChild(document.createTextNode("Bug Title")))
+			tr1.appendChild(document.createElement("th").appendChild(document.createTextNode("Project Id")))
+			tr1.appendChild(document.createElement("th").appendChild(document.createTextNode("Status")))
+			tr1.appendChild(document.createElement("th").appendChild(document.createTextNode("Severity")))
 			table.appendChild(tr1)
+			for(var i=0;i<bugs.length;i++){
+				var tr = document.createElement("tr");
+				tr.appendChild(document.createElement("td").appendChild(document.createTextNode(bugs[i].bugId)))
+				tr.appendChild(document.createElement("td").appendChild(document.createTextNode(bugs[i].bugTitle)))
+				tr.appendChild(document.createElement("td").appendChild(document.createTextNode(bugs[i].projectId)))
+				tr.appendChild(document.createElement("td").appendChild(document.createTextNode(bugs[i].status)))
+				tr.appendChild(document.createElement("td").appendChild(document.createTextNode(bugs[i].severity)))
+				table.appendChild(tr)
+			}
 			document.getElementById("bugTable").appendChild(table)
 		}
 	}

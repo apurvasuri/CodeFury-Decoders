@@ -30,14 +30,26 @@ public class BugControllerServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String projectId = request.getParameter("project_id");
-		List<Bug> bugList;
-		try {
-			bugList = dao.getAllBugsWithProjectId(projectId);
-			request.setAttribute("buglist", bugList);
-			request.getRequestDispatcher("/showbugs.jsp").forward(request, response);
-		} catch (ParseException e) {
-			e.printStackTrace();
+
+		System.out.println("lkalsmdlaskmdlaskd");
+		
+		if (request.getParameter("update") != null) {
+			if (request.getParameter("update").isEmpty() == false) {
+				if (request.getParameter("update").equalsIgnoreCase("true")) {
+					System.out.println("alksjda;lksd");
+					doPut(request, response);
+				}
+			}
+		} else {
+			String projectId = request.getParameter("project_id");
+			List<Bug> bugList;
+			try {
+				bugList = dao.getAllBugsWithProjectId(projectId);
+				request.setAttribute("buglist", bugList);
+				request.getRequestDispatcher("/showbugs.jsp").forward(request, response);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -95,6 +107,19 @@ public class BugControllerServlet extends HttpServlet {
 
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		System.out.println("ASvas");
+
+		HttpSession session = request.getSession();
+		User user = (User) session.getAttribute("User");
+		if (user.getUserType() == UserTypes.PM) {
+			String bugId = request.getParameter("bugID");
+			Bug bug = DAOFactory.getBugDAOImpl().getBugWithBugId(bugId);
+			int assignedTo = Integer.parseInt(request.getParameter("developerID"));
+			bug.setAssignedBy(user.getUserId());
+			bug.setAssignedTo(assignedTo);
+			DAOFactory.getBugDAOImpl().updateBugByBugId(bug);
+			request.getRequestDispatcher("/views/ProjectManagerJsp.jsp").forward(request, response);
+		}
 	}
 
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response)

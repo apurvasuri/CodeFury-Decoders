@@ -16,7 +16,8 @@
 <br>
 
 <div id="bugTable"></div>
-<form name="bugForm" action="bugController" method="put">
+<form name="bugForm" action="http://localhost:8080/BugTrackingSystem/bugController" method="GET">
+	<input type="text" hidden="hidden" value="true" name="update"/>
 	Project ID :<input type="text" name="projectID"/><br>
 	Developer ID : <input type="text" name="developerID"/><br>
 	Bug ID : <input type="text" name="bugID"/><br>
