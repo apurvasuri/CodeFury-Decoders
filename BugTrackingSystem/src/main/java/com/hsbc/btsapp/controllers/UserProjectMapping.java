@@ -1,6 +1,7 @@
 package com.hsbc.btsapp.controllers;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +63,9 @@ public class UserProjectMapping extends HttpServlet {
 						projectList.add(DAOFactory.getProjectDAOImpl().getProjectById(id));
 					} catch (ProjectDoesNotExistException e) {
 						request.setAttribute("errMessage", "No Project found");
+						e.printStackTrace();
+					} catch (ParseException e) {
+						request.setAttribute("errMessage", e.getMessage());
 						e.printStackTrace();
 					}
 				});

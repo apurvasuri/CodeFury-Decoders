@@ -22,10 +22,10 @@ public class LogoutServlet extends HttpServlet {
 		HttpSession session = request.getSession(false);
 
 		if (session == null) {
-			response.sendRedirect("/login");
+			response.sendRedirect("Homepage.html");
 		} else {
 			session.invalidate();
-			response.sendRedirect("/login");
+			response.sendRedirect("Homepage.html");
 		}
 
 	}

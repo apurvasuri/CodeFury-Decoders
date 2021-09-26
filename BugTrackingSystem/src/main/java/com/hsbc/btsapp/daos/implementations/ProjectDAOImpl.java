@@ -5,6 +5,8 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,16 +14,31 @@ import com.hsbc.btsapp.beans.Project;
 import com.hsbc.btsapp.beans.enums.Status;
 import com.hsbc.btsapp.daos.interfaces.ProjectDAO;
 import com.hsbc.btsapp.exceptions.ProjectAlreadyExistsException;
+import com.hsbc.btsapp.exceptions.ProjectCouldNotBeCreated;
 import com.hsbc.btsapp.exceptions.ProjectDoesNotExistException;
+import com.hsbc.btsapp.exceptions.UserCouldNotBeAdded;
 import com.hsbc.btsapp.utils.ConnectionUtils;
 
 public class ProjectDAOImpl implements ProjectDAO {
 
 	private PreparedStatement pst_1;
 
+	private java.util.Date parseSQLDate(String date) throws ParseException {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		java.util.Date project_start_date = null;
+		try {
+			project_start_date = format.parse(date);
+		} catch (ParseException e) {
+			throw new ParseException(e.getMessage(), 0);
+		}
+
+		return project_start_date;
+
+	}
+
 	@Override
-	public void addProject(Project project) throws ProjectAlreadyExistsException {
-		String project_count = "select count(project_id) from Project where project_id=?" ;
+	public void addProject(Project project) throws ProjectAlreadyExistsException, ProjectCouldNotBeCreated {
+		String project_count = "select count(project_id) from Project where project_id=?";
 		try {
 			Connection conn = ConnectionUtils.getConnection();
 			PreparedStatement pst = conn.prepareStatement(project_count);
@@ -39,7 +56,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 				PreparedStatement pst_1 = conn.prepareStatement(
 						"insert into Project(project_id,team_id, project_name, project_description, project_start_date,project_status) values(?,?,?,?,?,?)");
 				pst_1.setString(1, project.getProjectId());
-				pst_1.setInt(2,project.getTeamID());
+				pst_1.setInt(2, project.getTeamID());
 				pst_1.setString(3, project.getProjectName());
 				pst_1.setString(4, project.getProjectDescription());
 				pst_1.setDate(5, new java.sql.Date(project.getProjectStartDate().getTime()));
@@ -47,10 +64,14 @@ public class ProjectDAOImpl implements ProjectDAO {
 				int count = pst_1.executeUpdate();
 				if (count == 1) {
 					System.out.println("Project added");
+				} else {
+					throw new ProjectCouldNotBeCreated("New Project couldn't be created");
 				}
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (ProjectCouldNotBeCreated e) {
+			throw new ProjectCouldNotBeCreated(e.getMessage());
 		} finally {
 			ConnectionUtils.closeConnection();
 		}
@@ -87,7 +108,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 	}
 
 	@Override
-	public Project getProjectById(String projectID) throws ProjectDoesNotExistException {
+	public Project getProjectById(String projectID) throws ProjectDoesNotExistException, ParseException {
 		Project project = null;
 		try {
 			Connection conn = ConnectionUtils.getConnection();
@@ -95,9 +116,13 @@ public class ProjectDAOImpl implements ProjectDAO {
 			pst.setString(1, projectID);
 			ResultSet rs = pst.executeQuery();
 			if (rs.next()) {
+				System.out.println(rs.getString("project_start_date"));
+				System.out.println(Date.valueOf("2020-09-28"));
+				java.util.Date project_start_date = parseSQLDate(rs.getString("project_start_date"));
 				project = new Project(rs.getString("project_id"), rs.getString("project_name"),
-						rs.getString("project_description"), Date.valueOf(rs.getString("project_start_date")),
-						Status.valueOf(rs.getString("project_status")), rs.getInt("team_id"));
+						rs.getString("project_description"), project_start_date,
+						Status.getStatus(rs.getString("project_status")), rs.getInt("team_id"));
+
 			}
 
 		} catch (SQLException e) {
@@ -111,7 +136,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 
 	@Override
 
-	public List<Project> getProjectByTeamId(int teamID) throws ProjectDoesNotExistException {
+	public List<Project> getProjectByTeamId(int teamID) throws ProjectDoesNotExistException, ParseException {
 		Project project = null;
 		List<Project> listOfProjects = new ArrayList<>();
 		try {
@@ -120,9 +145,11 @@ public class ProjectDAOImpl implements ProjectDAO {
 			pst.setInt(1, teamID);
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
+				java.util.Date project_start_date = parseSQLDate(rs.getString("project_start_date"));
+
 				project = new Project(rs.getString("project_id"), rs.getString("project_name"),
-						rs.getString("project_description"), Date.valueOf(rs.getString("project_start_date")),
-						Status.valueOf(rs.getString("project_status")), rs.getInt("team_id"));
+						rs.getString("project_description"), project_start_date,
+						Status.getStatus(rs.getString("project_status")), rs.getInt("team_id"));
 				listOfProjects.add(project);
 			}
 
@@ -144,13 +171,17 @@ public class ProjectDAOImpl implements ProjectDAO {
 			pst.setString(1, projectName);
 			ResultSet rs = pst.executeQuery();
 			if (rs.next()) {
+				java.util.Date project_start_date = parseSQLDate(rs.getString("project_start_date"));
+
 				project = new Project(rs.getString("project_id"), rs.getString("project_name"),
-						rs.getString("project_description"), Date.valueOf(rs.getString("project_start_date")),
-						Status.valueOf(rs.getString("project_status")), rs.getInt("team_id"));
+						rs.getString("project_description"), project_start_date,
+						Status.getStatus(rs.getString("project_status")), rs.getInt("team_id"));
 			} else {
 				System.out.println("Project not found");
 			}
 		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
 			e.printStackTrace();
 		} finally {
 			ConnectionUtils.closeConnection();
@@ -167,11 +198,15 @@ public class ProjectDAOImpl implements ProjectDAO {
 			PreparedStatement pst = conn.prepareStatement("select * from Project");
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
+				java.util.Date project_start_date = parseSQLDate(rs.getString("project_start_date"));
+
 				projectList.add(new Project(rs.getString("project_id"), rs.getString("project_name"),
-						rs.getString("project_description"), Date.valueOf(rs.getString("project_start_date")),
-						Status.valueOf(rs.getString("project_status")), rs.getInt("team_id")));
+						rs.getString("project_description"), project_start_date,
+						Status.getStatus(rs.getString("project_status")), rs.getInt("team_id")));
 			}
 		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
 			e.printStackTrace();
 		} finally {
 			ConnectionUtils.closeConnection();
