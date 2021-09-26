@@ -105,6 +105,7 @@ public class BugDAOImpl implements BugDAO {
 	public int updateBugByBugId(Bug b) {
 		int i = 0;
 		try {
+			System.out.println(b);
 			Connection con = ConnectionUtils.getConnection();
 			ps = con.prepareStatement(
 					"update  Bug set bug_title =?, bug_description =?, project_id =?, created_by =?, assigned_by =?,assigned_to =?, marked_for_closing =?, closed_by =?, closed_on_date =?, status =?, severity =? where bug_id=? ");
@@ -116,6 +117,7 @@ public class BugDAOImpl implements BugDAO {
 			ps.setInt(6, b.getAssignedTo());
 			ps.setBoolean(7, b.isMarkedForClosing());
 			ps.setInt(8, b.getClosedBy());
+			
 			if (b.getClosedDate() != null)
 				ps.setDate(9, new java.sql.Date(b.getClosedDate().getTime()));
 			else
@@ -211,5 +213,50 @@ public class BugDAOImpl implements BugDAO {
 		}
 		return b;
 	}
+
+	@Override
+	public List<Bug> getAllBugsWithUserId(int assignedTo) throws ParseException {
+		List<Bug> userBugs = new ArrayList<Bug>();
+		try {
+			Connection con = ConnectionUtils.getConnection();
+			ps = con.prepareStatement("select * from Bug where assigned_to=?");
+			ps.setInt(1, assignedTo);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				Bug b = new Bug();
+				String bug_id = rs.getString(1);
+				String bug_title = rs.getString(2);
+				String bug_description = rs.getString(3);
+				String project_Id = rs.getString(4);
+				int created_by = rs.getInt(5);
+				Date open_date = parseSQLDate(rs.getString(6));
+				int assigned_by = rs.getInt(7);
+				int assigned_to  =rs.getInt(8);
+				boolean marked_for_closing = rs.getBoolean(9);
+				int Closed_by = rs.getInt(10);
+				Date close_date = parseSQLDate(rs.getString(11));
+				String status = rs.getString(12);
+				String severity = rs.getString(13);
+				b.setBugId(bug_id);
+				b.setBugTitle(bug_title);
+				b.setBugDescription(bug_description);
+				b.setClosedDate(close_date);
+				b.setAssignedBy(assigned_by);
+				b.setAssignedTo(assigned_to);
+				b.setClosedBy(Closed_by);
+				b.setCreatedBy(created_by);
+				b.setMarkedForClosing(marked_for_closing);
+				b.setSeverity(severity);
+				b.setProjectId(project_Id);
+				b.setOpenDate(open_date);
+				b.setStatus(status);
+				userBugs.add(b);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			ConnectionUtils.closeConnection();
+		}
+		return userBugs;	}
 
 }

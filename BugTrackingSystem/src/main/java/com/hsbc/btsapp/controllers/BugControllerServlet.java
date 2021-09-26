@@ -28,27 +28,49 @@ public class BugControllerServlet extends HttpServlet {
 		dao = new BugDAOImpl();
 	}
 
+	private List<Bug> getUserBugs(int userId) throws ParseException {
+		return DAOFactory.getBugDAOImpl().getAllBugsWithUserId(userId);
+	}
+
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		System.out.println("lkalsmdlaskmdlaskd");
-		
-		if (request.getParameter("update") != null) {
-			if (request.getParameter("update").isEmpty() == false) {
-				if (request.getParameter("update").equalsIgnoreCase("true")) {
-					System.out.println("alksjda;lksd");
-					doPut(request, response);
+		// get all bugs for users
+
+		HttpSession session = request.getSession();
+
+		User user = (User) session.getAttribute("User");
+		if (user != null) {
+			if (user.getUserType() == UserTypes.DEV) {
+				try {
+					List<Bug> userBugs = getUserBugs(user.getUserId());
+					request.setAttribute("buglist", userBugs);
+					request.getRequestDispatcher("/views/DeveloperJsp.jsp").forward(request, response);
+				} catch (ParseException e) {
+					e.printStackTrace();
 				}
 			}
-		} else {
-			String projectId = request.getParameter("project_id");
-			List<Bug> bugList;
-			try {
-				bugList = dao.getAllBugsWithProjectId(projectId);
-				request.setAttribute("buglist", bugList);
-				request.getRequestDispatcher("/showbugs.jsp").forward(request, response);
-			} catch (ParseException e) {
-				e.printStackTrace();
+		}
+
+		else {
+
+			if (request.getParameter("update") != null) {
+				if (request.getParameter("update").isEmpty() == false) {
+					if (request.getParameter("update").equalsIgnoreCase("true")) {
+						System.out.println("alksjda;lksd");
+						doPut(request, response);
+					}
+				}
+			} else {
+				String projectId = request.getParameter("project_id");
+				List<Bug> bugList;
+				try {
+					bugList = dao.getAllBugsWithProjectId(projectId);
+					request.setAttribute("buglist", bugList);
+					request.getRequestDispatcher("/showbugs.jsp").forward(request, response);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -64,45 +86,70 @@ public class BugControllerServlet extends HttpServlet {
 			request.getRequestDispatcher("Homepage.html").forward(request, response);
 		}
 		User user = (User) session.getAttribute("User");
-		if (user.getUserType() != UserTypes.TESTER) {
-			request.setAttribute("errMessage", "Unauthorised Access");
-			request.getRequestDispatcher("Homepage.html").forward(request, response);
-		}
-		int createdBy = Integer.parseInt(request.getParameter("createdBy"));
-		String projectId = request.getParameter("projectID");
-		String bugTitle = request.getParameter("bugTitle");
-		String bugDescription = request.getParameter("bugDescription");
-		String bugId = projectId + bugTitle;
-//		String projectId = request.getParameter("projectid");
-//		String createdBy = request.getParameter("createby");
-//		Date openDate = null, closedDate = null;
-//		try {
-//			openDate = new SimpleDateFormat("dd/mm/yyyy").parse(request.getParameter("opendate"));
-//			closedDate = new SimpleDateFormat("dd/mm/yyyy").parse(request.getParameter("closedate"));
-//		} catch (ParseException e) {
-//
-//			response.setStatus(403);
-//			response.setContentType("text/html");
-//			response.getWriter().print("Date could not be parsed");
-//			e.printStackTrace();
-//		}
-//		String assignedBy = request.getParameter("assignedBy");
-//		boolean markedForClosing = Boolean.getBoolean(request.getParameter("markedforclosing"));
-//		String closedBy = request.getParameter("closedBy");
-//		String status = request.getParameter("status");
-		String severity = request.getParameter("levels");
-		try {
-//			DAOFactory.getBugDAOImpl().addBug(new Bug(bugTitle, bugDescription, projectId, createdBy, openDate,
-//					assignedBy, markedForClosing, closedBy, closedDate, status, severity));
-			DAOFactory.getBugDAOImpl().addBug(new Bug(bugId, bugTitle, bugDescription, projectId, createdBy, severity));
-			request.getRequestDispatcher("/views/TesterJsp.jsp").forward(request, response);
 
-		} catch (BugAlreadyExitsException e) {
-			response.setStatus(403);
-			response.setContentType("text/html");
-			response.getWriter().print(e.toString());
-			e.printStackTrace();
+		if (user != null) {
+
+			// only DEV can close
+			if (user.getUserType() == UserTypes.DEV) {
+				String bugID = request.getParameter("bugID");
+				System.out.println(bugID);
+				if (bugID != null) {
+					if (!bugID.isEmpty()) {
+						System.out.println(bugID);
+
+						Bug bug = DAOFactory.getBugDAOImpl().getBugWithBugId(bugID);
+						System.out.println(bug);
+						bug.setMarkedForClosing(true);
+						DAOFactory.getBugDAOImpl().updateBugByBugId(bug);
+						request.getRequestDispatcher("/views/DeveloperJsp.jsp").forward(request, response);
+					}
+				}
+
+			}
+		} else {
+			if (user.getUserType() != UserTypes.TESTER) {
+				request.setAttribute("errMessage", "Unauthorised Access");
+				request.getRequestDispatcher("Homepage.html").forward(request, response);
+			}
+			int createdBy = Integer.parseInt(request.getParameter("createdBy"));
+			String projectId = request.getParameter("projectID");
+			String bugTitle = request.getParameter("bugTitle");
+			String bugDescription = request.getParameter("bugDescription");
+			String bugId = projectId + bugTitle;
+//			String projectId = request.getParameter("projectid");
+//			String createdBy = request.getParameter("createby");
+//			Date openDate = null, closedDate = null;
+//			try {
+//				openDate = new SimpleDateFormat("dd/mm/yyyy").parse(request.getParameter("opendate"));
+//				closedDate = new SimpleDateFormat("dd/mm/yyyy").parse(request.getParameter("closedate"));
+//			} catch (ParseException e) {
+			//
+//				response.setStatus(403);
+//				response.setContentType("text/html");
+//				response.getWriter().print("Date could not be parsed");
+//				e.printStackTrace();
+//			}
+//			String assignedBy = request.getParameter("assignedBy");
+//			boolean markedForClosing = Boolean.getBoolean(request.getParameter("markedforclosing"));
+//			String closedBy = request.getParameter("closedBy");
+//			String status = request.getParameter("status");
+			String severity = request.getParameter("levels");
+			try {
+//				DAOFactory.getBugDAOImpl().addBug(new Bug(bugTitle, bugDescription, projectId, createdBy, openDate,
+//						assignedBy, markedForClosing, closedBy, closedDate, status, severity));
+				DAOFactory.getBugDAOImpl()
+						.addBug(new Bug(bugId, bugTitle, bugDescription, projectId, createdBy, severity));
+				request.getRequestDispatcher("/views/TesterJsp.jsp").forward(request, response);
+
+			} catch (BugAlreadyExitsException e) {
+				response.setStatus(403);
+				response.setContentType("text/html");
+				response.getWriter().print(e.toString());
+				e.printStackTrace();
+			}
+
 		}
+
 	}
 
 	protected void doPut(HttpServletRequest request, HttpServletResponse response)

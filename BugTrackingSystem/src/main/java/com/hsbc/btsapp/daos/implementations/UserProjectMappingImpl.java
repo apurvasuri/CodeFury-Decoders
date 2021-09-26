@@ -35,8 +35,7 @@ public class UserProjectMappingImpl implements IUserProjectMapping {
 			int count = ps.executeUpdate();
 			if (count == 1) {
 				status = true;
-			}
-			else {
+			} else {
 				throw new UserCouldNotBeAdded("User could not be assigned to porject. Please check again");
 			}
 
@@ -91,6 +90,28 @@ public class UserProjectMappingImpl implements IUserProjectMapping {
 			ConnectionUtils.closeConnection();
 		}
 		return count;
+	}
+
+	@Override
+	public List<Integer> getUserOfProject(String projectID) {
+		String sql = "select user_id from user_project_mapping where project_id=?";
+		Connection con = ConnectionUtils.getConnection();
+		List<Integer> userIds = new ArrayList<>();
+		int count = 0;
+		try {
+			ps = con.prepareStatement(sql);
+			ps.setString(1, projectID);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				userIds.add(rs.getInt(1));
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			ConnectionUtils.closeConnection();
+		}
+		return userIds;
 	}
 
 }

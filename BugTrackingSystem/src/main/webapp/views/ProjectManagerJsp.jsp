@@ -11,7 +11,7 @@
 
 <% 
 List<Team> teamList = (List<Team>) request.getAttribute("pmTeamList");
-Project p=(Project) request.getAttribute("userProject"); 
+List<Project> p=(List<Project>) request.getAttribute("pmProject"); 
 List<Bug> blist=(List<Bug>) request.getAttribute("bug");
 User u=(User) session.getAttribute("User");
 %>
@@ -39,6 +39,8 @@ User u=(User) session.getAttribute("User");
 		</table>
 		
 <%} %>
+
+
 <a href="http://localhost:8080/BugTrackingSystem/views/AssignBugJsp.jsp">Assign Bugs To Developers</a>
 <form action="teamController" method="post">
 		<input type="submit" value="Create Team"/>

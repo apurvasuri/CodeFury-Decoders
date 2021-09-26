@@ -35,7 +35,7 @@
 	</header>
 	<br><br><br><br><br>
 	<%if(projectList==null){ %>
-		<p>No project assigned! <form action="UserProjectMapping" method="get"><input type="submit" value="Show All Projects"/></form></p>
+		<p><form action="UserProjectMapping" method="get"><input type="submit" value="Show All Projects"/></form></p>
 	<%} else {%>
 	<table name="devProjectTable">
 		<tr><th>Project ID</th><th>Project Name</th><th>Project Descriptions</th><th>Start Date</th><th>Project Status</th></tr>
@@ -46,13 +46,13 @@
 			<td><%=p.getProjectDescription()%></td>
 			<td><%=p.getProjectStartDate()%></td>
 			<td><%=p.getProjectStatus()%></td>
-			<td><%=p.getTeamID()%></td>
 		</tr>
+	<%}%>
 	<%}%>
 	</table>
 	<br><br>
 	<% if(blist==null){ %>
-		<p>No bugs found <form action="bugController" method="get"><input type="submit" value="Show All Bugs"/></form>
+		<p><form action="bugController" method="get"><input type="submit" value="Show All Bugs"/></form>
 	<%} else { %>
 		<table border="1">
 		<tr>
@@ -68,12 +68,15 @@
 			<td><%=b.getBugTitle() %></td>
 			<td><%=b.getBugDescription() %></td>
 			<td><%=b.getSeverity() %></td>
-			<td><a href="markForClosing?bugId=<%=b.getBugId() %>">Mark for closing</a></td>
+			<%if(b.isMarkedForClosing()==true){ %>
+			<td>Bug is marked for closing</td>
+			<%} else {%>
+			<td><form action="bugController?bugID=<%=b.getBugId() %>" method="POST"><input type="submit" value="Close bug"/></form></td>
+			<%} %>
 		</tr>
-		<%} %>
+		<%}%>
 	</table>
-	<%} %>
-	<%} %>
+	<%}%>
 	<footer>
     	<h2> &copy; Copyright Reserved. </h2>
 	</footer>

@@ -11,6 +11,8 @@ public interface BugDAO {
 
 	public List<Bug> getAllBugsWithProjectId(String projectId) throws ParseException;
 
+	public List<Bug> getAllBugsWithUserId(int assignedTo) throws ParseException;
+
 	public  Bug getBugWithBugId(String bugId);
 
 	public int updateBugByBugId(Bug b);

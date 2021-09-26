@@ -15,7 +15,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.hsbc.btsapp.beans.User;
 import com.google.gson.Gson;
@@ -58,10 +60,11 @@ public class ProjectControllerServlet extends HttpServlet {
 							for (Project project : managerProjects) {
 								projectBugs.addAll(
 										DAOFactory.getBugDAOImpl().getAllBugsWithProjectId(project.getProjectId()));
+	
 							}
-
-							String json = new Gson().toJson(projectBugs);
-							response.getWriter().write(json);
+							
+							String bugJson = new Gson().toJson(projectBugs);
+							response.getWriter().write(bugJson);
 
 						} catch (TeamNotFoundException e) {
 							e.printStackTrace();
