@@ -17,10 +17,11 @@
 	</style>
 </head>
 <body>
+<jsp:include page="LogoutJsp.jsp"></jsp:include>
 <% 
 	Team team = (Team) request.getAttribute("team");
-	Project p=(Project) request.getAttribute("userProject"); 
-	List<Bug> blist=(List<Bug>) request.getAttribute("bug");
+	List<Project> projectList=(List<Project>) request.getAttribute("userProject"); 
+	List<Bug> blist=(List<Bug>) request.getAttribute("buglist");
 	User u=(User) session.getAttribute("User");
 %>	<header>
         <img src = "logo.jpg" alt = "logo"> 
@@ -33,35 +34,22 @@
         </div>
 	</header>
 	<br><br><br><br><br>
-	<%if(p==null){ %>
+	<%if(projectList==null){ %>
 		<p>No project assigned! <form action="UserProjectMapping" method="get"><input type="submit" value="Show All Projects"/></form></p>
 	<%} else {%>
-		<form action="">
-		<table border="1">
+	<table name="devProjectTable">
+		<tr><th>Project ID</th><th>Project Name</th><th>Project Descriptions</th><th>Start Date</th><th>Project Status</th></tr>
+	<%for(Project p:projectList) {%>
 		<tr>
-			<th>Project Id : </th>
 			<td><%=p.getProjectId() %></td>
-		</tr>
-		<tr>
-			<th>Project Name : </th>
 			<td><%=p.getProjectName()%></td>
-		</tr>
-		<tr>
-			<th>Description : </th>
 			<td><%=p.getProjectDescription()%></td>
-		</tr>
-		<tr>
-			<th>Start Date : </th>
 			<td><%=p.getProjectStartDate()%></td>
-		</tr>
-		<tr>
-			<th>Project Status : </th>
 			<td><%=p.getProjectStatus()%></td>
-		</tr>
-		<tr>
-			<th>Team Id : </th>
 			<td><%=p.getTeamID()%></td>
 		</tr>
+	<%}%>
+	<%}%>
 	</table>
 	<br><br>
 	<% if(blist==null){ %>
@@ -84,9 +72,7 @@
 			<td><a href="markForClosing?bugId=<%=b.getBugId() %>">Mark for closing</a></td>
 		</tr>
 		<%} %>
-	</table>
-	<%} %>
-	</form>
+		</table>
 	<%} %>
 	<footer>
     	<h2> &copy; Copyright Reserved. </h2>

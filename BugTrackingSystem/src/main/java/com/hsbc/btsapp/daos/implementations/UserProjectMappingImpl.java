@@ -13,6 +13,7 @@ import com.hsbc.btsapp.beans.User;
 import com.hsbc.btsapp.daos.interfaces.IUserProjectMapping;
 import com.hsbc.btsapp.exceptions.ProjectNotFoundException;
 import com.hsbc.btsapp.exceptions.TeamNotFoundException;
+import com.hsbc.btsapp.exceptions.UserCouldNotBeAdded;
 import com.hsbc.btsapp.utils.ConnectionUtils;
 
 public class UserProjectMappingImpl implements IUserProjectMapping {
@@ -21,7 +22,7 @@ public class UserProjectMappingImpl implements IUserProjectMapping {
 	ResultSet rs;
 
 	@Override
-	public boolean addUserToProject(User user, String projectId) {
+	public boolean addUserToProject(User user, String projectId) throws UserCouldNotBeAdded {
 		boolean status = false;
 		String sql = "insert into user_project_mapping(user_id,user_type,project_id) values(?,?,?)";
 		Connection con = ConnectionUtils.getConnection();
@@ -35,9 +36,14 @@ public class UserProjectMappingImpl implements IUserProjectMapping {
 			if (count == 1) {
 				status = true;
 			}
+			else {
+				throw new UserCouldNotBeAdded("User could not be assigned to porject. Please check again");
+			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
+		} catch (UserCouldNotBeAdded e) {
+			throw new UserCouldNotBeAdded(e.getMessage());
 		} finally {
 			ConnectionUtils.closeConnection();
 		}

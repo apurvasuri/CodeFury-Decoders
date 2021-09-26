@@ -23,9 +23,11 @@ import com.hsbc.btsapp.beans.Team;
 import com.hsbc.btsapp.beans.enums.Status;
 import com.hsbc.btsapp.beans.enums.UserTypes;
 import com.hsbc.btsapp.exceptions.ProjectAlreadyExistsException;
+import com.hsbc.btsapp.exceptions.ProjectCouldNotBeCreated;
 import com.hsbc.btsapp.exceptions.ProjectDoesNotExistException;
 import com.hsbc.btsapp.exceptions.ProjectNotFoundException;
 import com.hsbc.btsapp.exceptions.TeamNotFoundException;
+import com.hsbc.btsapp.exceptions.UserCouldNotBeAdded;
 import com.hsbc.btsapp.factory.DAOFactory;
 
 @WebServlet("/projectController")
@@ -49,6 +51,9 @@ public class ProjectControllerServlet extends HttpServlet {
 				projectList.add(project);
 			} catch (ProjectDoesNotExistException e) {
 				System.out.println(e.getMessage());
+			} catch (ParseException e) {
+				System.out.println(e.getMessage());
+				e.printStackTrace();
 			}
 		}
 		List<Team> pmteamList = new ArrayList<>();
@@ -61,6 +66,8 @@ public class ProjectControllerServlet extends HttpServlet {
 					try {
 						projectList.addAll(DAOFactory.getProjectDAOImpl().getProjectByTeamId(team.getTeamId()));
 					} catch (ProjectDoesNotExistException e) {
+						e.printStackTrace();
+					} catch (ParseException e) {
 						e.printStackTrace();
 					}
 				}
@@ -77,6 +84,8 @@ public class ProjectControllerServlet extends HttpServlet {
 				projectList.addAll(DAOFactory.getProjectDAOImpl().getProjectByTeamId(userTeam.getTeamId()));
 			} catch (ProjectDoesNotExistException e) {
 				e.printStackTrace();
+			} catch (ParseException e) {
+				e.printStackTrace();
 			}
 			request.setAttribute("userProject", pmteamList);
 		}
@@ -90,6 +99,8 @@ public class ProjectControllerServlet extends HttpServlet {
 			response.setStatus(403);
 			response.setContentType("text/html");
 			response.getWriter().print(e.toString());
+			e.printStackTrace();
+		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 		switch (user.getUserType()) {
@@ -105,6 +116,15 @@ public class ProjectControllerServlet extends HttpServlet {
 		default:
 			request.setAttribute("errMessage", "Something went wrong");
 			request.getRequestDispatcher("Homepage.html").forward(request, response);
+		}
+	}
+
+	// Add user to user_project_mapping table
+	protected void addUserToProject(String[] userIds, String projectId) throws UserCouldNotBeAdded {
+		for (String id : userIds) {
+			int uId = Integer.parseInt(id);
+			User user = DAOFactory.getUserDAOImpl().getUserById(uId);
+			DAOFactory.getUserProjectMapping().addUserToProject(user, projectId);
 		}
 	}
 
@@ -160,12 +180,17 @@ public class ProjectControllerServlet extends HttpServlet {
 			try {
 				DAOFactory.getProjectDAOImpl().addProject(new Project(projectID, projectName, projectDescription,
 						projectStartDate, projectStatus, teamID));
+				addUserToProject(selectedUsers, projectID);
+				request.setAttribute("succMessage", "Project created and user assigned");
 				request.getRequestDispatcher("/views/ProjectManagerJsp.jsp").forward(request, response);
-			} catch (ProjectAlreadyExistsException e) {
+			} catch (ProjectAlreadyExistsException | ProjectCouldNotBeCreated e) {
 				response.setStatus(403);
 				response.setContentType("text/html");
 				response.getWriter().print(e.toString());
 				e.printStackTrace();
+			} catch (UserCouldNotBeAdded e) {
+				request.setAttribute("errMessage", e.getMessage());
+				request.getRequestDispatcher("/views/ProjectManagerJsp.jsp").forward(request, response);
 			}
 		}
 	}

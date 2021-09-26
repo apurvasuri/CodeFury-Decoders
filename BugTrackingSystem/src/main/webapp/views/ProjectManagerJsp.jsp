@@ -7,6 +7,7 @@
 <title>Project Manager</title>
 </head>
 <body>
+<jsp:include page="LogoutJsp.jsp"></jsp:include>
 
 <% 
 List<Team> teamList = (List<Team>) request.getAttribute("pmTeamList");
