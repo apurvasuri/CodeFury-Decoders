@@ -5,7 +5,7 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Decoders</title>
-<link href="style.css" rel="stylesheet">
+<link href="form.css" rel="stylesheet">
 <style>
 #userinfo {
 	float: right;
@@ -50,9 +50,6 @@ button:hover {
 <body>
 	<header>
 		<img src="logo.jpg" alt="logo">
-		<div class="nav">
-			<a href="#">About</a>
-		</div>
 	</header>
 	<br>
 	<br>
@@ -60,13 +57,15 @@ button:hover {
 	<br>
 	<br>
 	<%
-	out.println(request.getAttribute("errMessage"));
+		out.println(request.getAttribute("errMessage"));
 	%>
-	<form action="importUsers" method="post" enctype="multipart/form-data">
-		<label for="selectedfile">Choose a file to import : </label> <input
-			type="file" name="file" accept=".json,.xml"><br> <br>
-		<input type="submit" value="Import" />
-	</form>
+	<div class="mid">
+		<form action="importUsers" method="post" enctype="multipart/form-data">
+			<input type="file" name="file" accept=".json,.xml"
+				placeholder="import json file"><br> <br> <input
+				type="submit" value="Import" />
+		</form>
+	</div>
 	<footer>
 		<h2>&copy; Copyright Reserved.</h2>
 	</footer>

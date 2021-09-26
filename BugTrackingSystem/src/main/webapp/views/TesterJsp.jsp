@@ -12,6 +12,7 @@ contentType="text/html; charset=ISO-8859-1" pageEncoding = "ISO-8859-1"%>
         <link rel="stylesheet" href="styles.css">
         <script src="https://kit.fontawesome.com/d04b222810.js" ></script>
         <script src="../js/tester.js"></script>
+       <link href="generic.css" rel="stylesheet">
 </head>
 <body>
 <h1>Welcome Tester</h1>

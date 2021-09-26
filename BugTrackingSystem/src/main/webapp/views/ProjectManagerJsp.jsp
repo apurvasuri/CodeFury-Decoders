@@ -5,6 +5,7 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Project Manager</title>
+<link href="generic.css" rel="stylesheet">
 </head>
 <body>
 <jsp:include page="LogoutJsp.jsp"></jsp:include>
