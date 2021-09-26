@@ -38,8 +38,8 @@ User u=(User) session.getAttribute("User");
 		<%} %>
 		</table>
 		
-		
 <%} %>
+<a href="http://localhost:8080/BugTrackingSystem/views/AssignBugJsp.jsp">Assign Bugs To Developers</a>
 <form action="teamController" method="post">
 		<input type="submit" value="Create Team"/>
 </form>

@@ -18,6 +18,8 @@ import java.util.Date;
 import java.util.List;
 
 import com.hsbc.btsapp.beans.User;
+import com.google.gson.Gson;
+import com.hsbc.btsapp.beans.Bug;
 import com.hsbc.btsapp.beans.Project;
 import com.hsbc.btsapp.beans.Team;
 import com.hsbc.btsapp.beans.enums.Status;
@@ -37,86 +39,124 @@ public class ProjectControllerServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		User user = (User) request.getSession().getAttribute("User");
-		List<String> projectIds = new ArrayList<>();
-		try {
-			projectIds = DAOFactory.getUserProjectMapping().getUserProjects(user.getUserId());
-		} catch (ProjectNotFoundException e1) {
-			e1.printStackTrace();
-		}
-		List<Project> projectList = new ArrayList<>();
-		for (String pId : projectIds) {
-			Project project;
-			try {
-				project = DAOFactory.getProjectDAOImpl().getProjectById(pId);
-				projectList.add(project);
-			} catch (ProjectDoesNotExistException e) {
-				System.out.println(e.getMessage());
-			} catch (ParseException e) {
-				System.out.println(e.getMessage());
-				e.printStackTrace();
-			}
-		}
-		List<Team> pmteamList = new ArrayList<>();
-		Team userTeam = null;
-		if (user.getUserType() == UserTypes.PM) {
-			try {
-				pmteamList = DAOFactory.getTeamDAOImpl().getTeamByUserId(user.getUserId());
-				request.setAttribute("pmProject", projectList);
-				for (Team team : pmteamList) {
-					try {
-						projectList.addAll(DAOFactory.getProjectDAOImpl().getProjectByTeamId(team.getTeamId()));
-					} catch (ProjectDoesNotExistException e) {
-						e.printStackTrace();
-					} catch (ParseException e) {
-						e.printStackTrace();
+
+		System.out.println(request.getParameter("requestFrom"));
+		if (request.getParameter("requestFrom") != null) {
+			if (request.getParameter("requestFrom").isEmpty() == false) {
+				if (request.getParameter("requestFrom").equalsIgnoreCase("manager")) {
+					System.out.println("Request from  = " + request.getParameter("requestFrom"));
+					if (user.getUserType() == UserTypes.PM) {
+						try {
+							response.setContentType("application/json");
+							List<Team> managerTeams = DAOFactory.getTeamDAOImpl().getTeamByUserId(user.getUserId());
+							List<Project> managerProjects = new ArrayList<>();
+							for (Team team : managerTeams) {
+								managerProjects
+										.addAll(DAOFactory.getProjectDAOImpl().getProjectByTeamId(team.getTeamId()));
+							}
+							List<Bug> projectBugs = new ArrayList<>();
+							for (Project project : managerProjects) {
+								projectBugs.addAll(
+										DAOFactory.getBugDAOImpl().getAllBugsWithProjectId(project.getProjectId()));
+							}
+
+							String json = new Gson().toJson(projectBugs);
+							response.getWriter().write(json);
+
+						} catch (TeamNotFoundException e) {
+							e.printStackTrace();
+						} catch (ProjectDoesNotExistException e) {
+							e.printStackTrace();
+						} catch (ParseException e) {
+							e.printStackTrace();
+						}
 					}
 				}
-			} catch (TeamNotFoundException e) {
-				e.printStackTrace();
 			}
 		} else {
+			List<String> projectIds = new ArrayList<>();
 			try {
-				userTeam = DAOFactory.getUserTeamMapping().getUserTeam(user.getUserId());
-			} catch (TeamNotFoundException e) {
-				e.printStackTrace();
+				projectIds = DAOFactory.getUserProjectMapping().getUserProjects(user.getUserId());
+			} catch (ProjectNotFoundException e1) {
+				e1.printStackTrace();
 			}
+			List<Project> projectList = new ArrayList<>();
+			for (String pId : projectIds) {
+				Project project;
+				try {
+					project = DAOFactory.getProjectDAOImpl().getProjectById(pId);
+					projectList.add(project);
+				} catch (ProjectDoesNotExistException e) {
+					System.out.println(e.getMessage());
+				} catch (ParseException e) {
+					System.out.println(e.getMessage());
+					e.printStackTrace();
+				}
+			}
+			List<Team> pmteamList = new ArrayList<>();
+			Team userTeam = null;
+			if (user.getUserType() == UserTypes.PM) {
+				try {
+					pmteamList = DAOFactory.getTeamDAOImpl().getTeamByUserId(user.getUserId());
+					for (Team team : pmteamList) {
+						try {
+							projectList.addAll(DAOFactory.getProjectDAOImpl().getProjectByTeamId(team.getTeamId()));
+						} catch (ProjectDoesNotExistException e) {
+							e.printStackTrace();
+						} catch (ParseException e) {
+							e.printStackTrace();
+						}
+					}
+					request.setAttribute("pmProjects", projectList);
+					request.getRequestDispatcher("/views/ProjectManagerJsp.jsp").forward(request, response);
+				} catch (TeamNotFoundException e) {
+					e.printStackTrace();
+				}
+			} else {
+				try {
+					userTeam = DAOFactory.getUserTeamMapping().getUserTeam(user.getUserId());
+				} catch (TeamNotFoundException e) {
+					e.printStackTrace();
+				}
+				try {
+					projectList.addAll(DAOFactory.getProjectDAOImpl().getProjectByTeamId(userTeam.getTeamId()));
+				} catch (ProjectDoesNotExistException e) {
+					e.printStackTrace();
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+				request.setAttribute("userProject", pmteamList);
+			}
+			int teamId = userTeam.getTeamId();
+			if (request.getParameter("teamId") != null || !request.getParameter("teamId").isEmpty())
+				teamId = Integer.parseInt(request.getParameter("teamID"));
 			try {
-				projectList.addAll(DAOFactory.getProjectDAOImpl().getProjectByTeamId(userTeam.getTeamId()));
+				projectList = DAOFactory.getProjectDAOImpl().getProjectByTeamId(teamId);
+				request.setAttribute("teamProject", projectList);
 			} catch (ProjectDoesNotExistException e) {
+				response.setStatus(403);
+				response.setContentType("text/html");
+				response.getWriter().print(e.toString());
 				e.printStackTrace();
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			request.setAttribute("userProject", pmteamList);
+			switch (user.getUserType()) {
+			case DEV:
+				request.getRequestDispatcher("/views/DeveloperJsp.jsp").forward(request, response);
+				break;
+			case PM:
+				request.getRequestDispatcher("/views/ProjectManagerJsp.jsp").forward(request, response);
+				break;
+			case TESTER:
+				request.getRequestDispatcher("/views/TesterJsp.jsp").forward(request, response);
+				break;
+			default:
+				request.setAttribute("errMessage", "Something went wrong");
+				request.getRequestDispatcher("Homepage.html").forward(request, response);
+			}
 		}
-		int teamId = userTeam.getTeamId();
-		if (request.getParameter("teamId") != null || !request.getParameter("teamId").isEmpty())
-			teamId = Integer.parseInt(request.getParameter("teamID"));
-		try {
-			projectList = DAOFactory.getProjectDAOImpl().getProjectByTeamId(teamId);
-			request.setAttribute("teamProject", projectList);
-		} catch (ProjectDoesNotExistException e) {
-			response.setStatus(403);
-			response.setContentType("text/html");
-			response.getWriter().print(e.toString());
-			e.printStackTrace();
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-		switch (user.getUserType()) {
-		case DEV:
-			request.getRequestDispatcher("/views/DeveloperJsp.jsp").forward(request, response);
-			break;
-		case PM:
-			request.getRequestDispatcher("/views/ProjectManagerJsp.jsp").forward(request, response);
-			break;
-		case TESTER:
-			request.getRequestDispatcher("/views/TesterJsp.jsp").forward(request, response);
-			break;
-		default:
-			request.setAttribute("errMessage", "Something went wrong");
-			request.getRequestDispatcher("Homepage.html").forward(request, response);
-		}
+
 	}
 
 	// Add user to user_project_mapping table

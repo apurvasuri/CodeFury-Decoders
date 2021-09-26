@@ -4,22 +4,21 @@ import java.util.Date;
 
 public class Bug {
 
-	private int bugId;
+	private String bugId;
 	private String bugTitle;
 	private String bugDescription;
-	private int projectId;
-	private String createdBy;
+	private String projectId;
+	private int createdBy;
 	private Date openDate;
-	private String assignedBy;
+	private int assignedBy;
 	private boolean markedForClosing;
-	private String closedBy;
+	private int closedBy;
 	private Date closedDate;
 	private String status;
 	private String severity;
 
-	public Bug(int bugId, String bugTitle, String bugDescription, int projectId, String createdBy, Date openDate,
-			String assignedBy, boolean markedForClosing, String closedBy, Date closedDate, String status,
-			String severity) {
+	public Bug(String bugId, String bugTitle, String bugDescription, String projectId, int createdBy, Date openDate,
+			int assignedBy, boolean markedForClosing, int closedBy, Date closedDate, String status, String severity) {
 		super();
 		this.bugId = bugId;
 		this.bugTitle = bugTitle;
@@ -35,11 +34,17 @@ public class Bug {
 		this.severity = severity;
 	}
 
-	
-	
-	public Bug(String bugTitle, String bugDescription, int projectId, String createdBy, Date openDate,
-			String assignedBy, boolean markedForClosing, String closedBy, Date closedDate, String status,
-			String severity) {
+	public Bug(String bugId, String bugTitle, String bugDescription, String projectId, int createdBy, String severity) {
+		this.bugId = bugId;
+		this.bugTitle = bugTitle;
+		this.bugDescription = bugDescription;
+		this.projectId = projectId;
+		this.createdBy = createdBy;
+		this.severity = severity;
+	}
+
+	public Bug(String bugTitle, String bugDescription, String projectId, int createdBy, Date openDate, int assignedBy,
+			boolean markedForClosing, int closedBy, Date closedDate, String status, String severity) {
 		super();
 		this.bugTitle = bugTitle;
 		this.bugDescription = bugDescription;
@@ -54,17 +59,15 @@ public class Bug {
 		this.severity = severity;
 	}
 
-
-
 	public Bug() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public int getBugId() {
+	public String getBugId() {
 		return bugId;
 	}
 
-	public void setBugId(int bugId) {
+	public void setBugId(String bugId) {
 		this.bugId = bugId;
 	}
 
@@ -84,19 +87,19 @@ public class Bug {
 		this.bugDescription = bugDescription;
 	}
 
-	public int getProjectId() {
+	public String getProjectId() {
 		return projectId;
 	}
 
-	public void setProjectId(int projectId) {
+	public void setProjectId(String projectId) {
 		this.projectId = projectId;
 	}
 
-	public String getCreatedBy() {
+	public int getCreatedBy() {
 		return createdBy;
 	}
 
-	public void setCreatedBy(String createdBy) {
+	public void setCreatedBy(int createdBy) {
 		this.createdBy = createdBy;
 	}
 
@@ -108,11 +111,11 @@ public class Bug {
 		this.openDate = openDate;
 	}
 
-	public String getAssignedBy() {
+	public int getAssignedBy() {
 		return assignedBy;
 	}
 
-	public void setAssignedBy(String assignedBy) {
+	public void setAssignedBy(int assignedBy) {
 		this.assignedBy = assignedBy;
 	}
 
@@ -124,11 +127,11 @@ public class Bug {
 		this.markedForClosing = markedForClosing;
 	}
 
-	public String getClosedBy() {
+	public int getClosedBy() {
 		return closedBy;
 	}
 
-	public void setClosedBy(String closedBy) {
+	public void setClosedBy(int closedBy) {
 		this.closedBy = closedBy;
 	}
 
@@ -154,6 +157,18 @@ public class Bug {
 
 	public void setSeverity(String severity) {
 		this.severity = severity;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Bug [bugId=").append(bugId).append(", bugTitle=").append(bugTitle).append(", bugDescription=")
+				.append(bugDescription).append(", projectId=").append(projectId).append(", createdBy=")
+				.append(createdBy).append(", openDate=").append(openDate).append(", assignedBy=").append(assignedBy)
+				.append(", markedForClosing=").append(markedForClosing).append(", closedBy=").append(closedBy)
+				.append(", closedDate=").append(closedDate).append(", status=").append(status).append(", severity=")
+				.append(severity).append("]");
+		return builder.toString();
 	}
 
 }
