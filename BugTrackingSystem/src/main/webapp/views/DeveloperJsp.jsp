@@ -49,7 +49,6 @@
 			<td><%=p.getTeamID()%></td>
 		</tr>
 	<%}%>
-	<%}%>
 	</table>
 	<br><br>
 	<% if(blist==null){ %>
@@ -72,7 +71,8 @@
 			<td><a href="markForClosing?bugId=<%=b.getBugId() %>">Mark for closing</a></td>
 		</tr>
 		<%} %>
-		</table>
+	</table>
+	<%} %>
 	<%} %>
 	<footer>
     	<h2> &copy; Copyright Reserved. </h2>

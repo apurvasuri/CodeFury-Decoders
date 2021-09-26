@@ -42,6 +42,15 @@ public class User {
 	
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("User [userId=").append(userId).append(", userName=").append(userName).append(", emailId=")
+				.append(emailId).append(", password=").append(password).append(", userType=").append(userType)
+				.append("]");
+		return builder.toString();
+	}
+
 	public int getUserId() {
 		return userId;
 	}

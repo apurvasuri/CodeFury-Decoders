@@ -36,40 +36,50 @@ public class UserProjectMapping extends HttpServlet {
 
 		HttpSession session = request.getSession();
 		User user = (User) session.getAttribute("User");
-		int count = DAOFactory.getUserProjectMapping().getUserProjectCount(user.getUserId());
-		if (count == 0) {
-			request.setAttribute("errMessage", "No Project found");
-			switch (user.getUserType()) {
-			case DEV:
-				request.getRequestDispatcher("/views/DeveloperJsp.jsp").forward(request, response);
-				break;
-			case PM:
-				request.getRequestDispatcher("/views/ProjectManagerJsp.jsp").forward(request, response);
-				break;
-			case TESTER:
-				request.getRequestDispatcher("/views/TesterJsp.jsp").forward(request, response);
-				break;
-			default:
-				session.invalidate();
-				request.setAttribute("errMessage", "Something went wrong");
-				request.getRequestDispatcher("Homepage.html").forward(request, response);
-			}
-		} else {
-			try {
-				List<String> projectIds = DAOFactory.getUserProjectMapping().getUserProjects(user.getUserId());
-				List<Project> projectList = new ArrayList<Project>();
-				projectIds.forEach(id -> {
+		System.out.println("Gettin user " + user);
+
+		if (request.getParameter("requestFrom") != null) {
+			System.out.println("requestFrom received");
+			if (!request.getParameter("requestFrom").isEmpty()) {
+				int count = DAOFactory.getUserProjectMapping().getUserProjectCount(user.getUserId());
+				if (count == 0) {
+					response.setContentType("text/html");
+					response.setCharacterEncoding("UTF-8");
+					response.getWriter().write("no project found");
+				} else {
 					try {
-						projectList.add(DAOFactory.getProjectDAOImpl().getProjectById(id));
-					} catch (ProjectDoesNotExistException e) {
+						System.out.println("Project Exist for " + user);
+						response.setContentType("application/json");
+						response.setCharacterEncoding("UTF-8");
+						List<String> projectIds = DAOFactory.getUserProjectMapping().getUserProjects(user.getUserId());
+						List<Project> projectList = new ArrayList<Project>();
+						projectIds.forEach(id -> {
+							try {
+								projectList.add(DAOFactory.getProjectDAOImpl().getProjectById(id));
+							} catch (ProjectDoesNotExistException e) {
+								e.printStackTrace();
+							} catch (ParseException e) {
+								request.setAttribute("errMessage", e.getMessage());
+								e.printStackTrace();
+							}
+						});
+						response.setContentType("text/html");
+						response.setCharacterEncoding("UTF-8");
+						String json = new Gson().toJson(projectList);
+						response.getWriter().write(json);
+					} catch (ProjectNotFoundException e) {
 						request.setAttribute("errMessage", "No Project found");
 						e.printStackTrace();
-					} catch (ParseException e) {
-						request.setAttribute("errMessage", e.getMessage());
-						e.printStackTrace();
 					}
-				});
-				request.setAttribute("userProject", projectList);
+				}
+			}
+		}
+
+		else {
+
+			int count = DAOFactory.getUserProjectMapping().getUserProjectCount(user.getUserId());
+			if (count == 0) {
+				request.setAttribute("errMessage", "No Project found");
 				switch (user.getUserType()) {
 				case DEV:
 					request.getRequestDispatcher("/views/DeveloperJsp.jsp").forward(request, response);
@@ -85,9 +95,46 @@ public class UserProjectMapping extends HttpServlet {
 					request.setAttribute("errMessage", "Something went wrong");
 					request.getRequestDispatcher("Homepage.html").forward(request, response);
 				}
-			} catch (ProjectNotFoundException e) {
-				request.setAttribute("errMessage", "No Project found");
-				e.printStackTrace();
+			} else {
+				try {
+					System.out.println("Project Exist for " + user);
+					response.setContentType("application/json");
+					response.setCharacterEncoding("UTF-8");
+					List<String> projectIds = DAOFactory.getUserProjectMapping().getUserProjects(user.getUserId());
+					List<Project> projectList = new ArrayList<Project>();
+					projectIds.forEach(id -> {
+						try {
+							projectList.add(DAOFactory.getProjectDAOImpl().getProjectById(id));
+						} catch (ProjectDoesNotExistException e) {
+							request.setAttribute("errMessage", "No Project found");
+							e.printStackTrace();
+						} catch (ParseException e) {
+							request.setAttribute("errMessage", e.getMessage());
+							e.printStackTrace();
+						}
+					});
+					request.setAttribute("userProject", projectList);
+					String json = new Gson().toJson(projectList);
+					response.getWriter().write(json);
+					switch (user.getUserType()) {
+					case DEV:
+						request.getRequestDispatcher("/views/DeveloperJsp.jsp").forward(request, response);
+						break;
+					case PM:
+						request.getRequestDispatcher("/views/ProjectManagerJsp.jsp").forward(request, response);
+						break;
+					case TESTER:
+						request.getRequestDispatcher("/views/TesterJsp.jsp").forward(request, response);
+						break;
+					default:
+						session.invalidate();
+						request.setAttribute("errMessage", "Something went wrong");
+						request.getRequestDispatcher("Homepage.html").forward(request, response);
+					}
+				} catch (ProjectNotFoundException e) {
+					request.setAttribute("errMessage", "No Project found");
+					e.printStackTrace();
+				}
 			}
 		}
 	}
