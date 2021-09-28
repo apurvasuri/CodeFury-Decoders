@@ -158,7 +158,7 @@ public class BugControllerServlet extends HttpServlet {
 		if (user.getUserType() == UserTypes.PM) {
 			String bugId = request.getParameter("bugID");
 			Bug bug = DAOFactory.getBugDAOImpl().getBugWithBugId(bugId);
-			int assignedTo = Integer.parseInt(request.getParameter("developerID"));
+			int assignedTo = Integer.parseInt(request.getParameter("developerID"));  
 			bug.setAssignedBy(user.getUserId());
 			bug.setAssignedTo(assignedTo);
 			DAOFactory.getBugDAOImpl().updateBugByBugId(bug);
